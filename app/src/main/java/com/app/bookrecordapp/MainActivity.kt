@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -271,45 +272,56 @@ fun MenuScreen(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(onClick = { navController.navigate("translation") },
+            Button(
+                onClick = { navController.navigate("translation") },
                 modifier = Modifier
                     .width(180.dp)
                     .height(50.dp)
             ) {
                 Text(
                     text = "문장 추출&번역",
-                    fontSize = 20.sp)
+                    fontSize = 20.sp
+                )
 
             }
             Spacer(modifier = Modifier.padding(24.dp))
-            Button(onClick = { navController.navigate("record") },
+            Button(
+                onClick = { navController.navigate("record") },
                 modifier = Modifier
                     .width(180.dp)
                     .height(50.dp)
             ) {
 
-                Text(text = "독서 기록",
-                    fontSize = 20.sp)
+                Text(
+                    text = "독서 기록",
+                    fontSize = 20.sp
+                )
 
             }
             Spacer(modifier = Modifier.padding(24.dp))
-            Button(onClick = { navController.navigate("extraction") },
+            Button(
+                onClick = { navController.navigate("extraction") },
                 modifier = Modifier
                     .width(180.dp)
                     .height(50.dp)
             ) {
-                Text(text = "도서 항목 추출",
-                    fontSize = 20.sp)
+                Text(
+                    text = "도서 항목 추출",
+                    fontSize = 20.sp
+                )
 
             }
             Spacer(modifier = Modifier.padding(24.dp))
-            Button(onClick = { navController.navigate("stopwatch") },
+            Button(
+                onClick = { navController.navigate("stopwatch") },
                 modifier = Modifier
                     .width(180.dp)
                     .height(50.dp)
             ) {
-                Text(text = "독서 타이머",
-                    fontSize = 20.sp)
+                Text(
+                    text = "독서 타이머",
+                    fontSize = 20.sp
+                )
 
             }
 
@@ -320,6 +332,49 @@ fun MenuScreen(navController: NavController) {
     }
 }
 
+@Composable
+fun MyProfile() {
+
+    Row {
+        Image(
+            painter = painterResource(id = R.drawable.notebook_cat),
+            contentDescription = "",
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.primary)
+                .size(150.dp)
+
+
+        )
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            
+            Text(text = "나의 상태")
+
+
+            Button(
+                onClick = { /*TODO*/ },
+                modifier = Modifier
+                    .width(180.dp)
+                    .height(50.dp)
+            ) {
+                
+
+                Text(text = "독서 그래프")
+
+            }
+
+        }
+
+    }
+
+}
+
+@Composable
+fun recordGraph() {
+
+}
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -337,7 +392,7 @@ fun NoteInputText(
     TextField(
         value = text,
         onValueChange = onTextChange,
-        colors = TextFieldDefaults.textFieldColors(),
+        colors = TextFieldDefaults.textFieldColors(MaterialTheme.colorScheme.primary),
         maxLines = maxLine,
         label = { Text(text = label) },
         keyboardOptions = KeyboardOptions.Default.copy(
@@ -367,11 +422,12 @@ fun NoteButton(
         Text(text = text)
     }
 }
+
 data class Note(
-    val id:UUID=UUID.randomUUID(),
-    val title:String,
-    val description:String,
-    val entryDate:LocalDateTime=LocalDateTime.now()
+    val id: UUID = UUID.randomUUID(),
+    val title: String,
+    val description: String,
+    val entryDate: LocalDateTime = LocalDateTime.now()
 ) {
     companion object {
         fun create(title: String, description: String): Note {
@@ -400,7 +456,7 @@ fun NoteRow(
     modifier: Modifier = Modifier,
     note: Note,
     onNoteClicked: (Note) -> Unit
-){
+) {
     Surface(
         modifier
             .clickable { onNoteClicked(note) }
@@ -455,24 +511,27 @@ fun ReadingRecordScreen(navController: NavController) {
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        MyProfile()
+
         NoteInputText(
             Modifier
-                .padding(top=9.dp, bottom=8.dp),
+                .padding(top = 9.dp, bottom = 8.dp),
             text = title,
             label = "제목",
             onTextChange = {
-                if(it.all { char ->
+                if (it.all { char ->
                         char.isLetter() || char.isWhitespace()
                     }) title = it
             }
         )
         NoteInputText(
             Modifier
-                .padding(top=9.dp, bottom=8.dp),
+                .padding(top = 9.dp, bottom = 8.dp),
             text = description,
             label = "기록 추가",
             onTextChange = {
-                if(it.all { char ->
+                if (it.all { char ->
                         char.isLetter() || char.isWhitespace()
                     }) description = it
             }
