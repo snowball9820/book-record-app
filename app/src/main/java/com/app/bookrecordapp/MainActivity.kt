@@ -416,8 +416,14 @@ fun NoteRow(
                 ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = note.title, style = MaterialTheme.typography.headlineSmall)
-            Text(text = note.description, style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = note.title,
+                style = MaterialTheme.typography.headlineSmall
+            )
+            Text(
+                text = note.description,
+                style = MaterialTheme.typography.bodyMedium
+            )
             Text(
                 text = note.entryDate.format(DateTimeFormatter.ofPattern("EEE, d MMM")),
                 style = MaterialTheme.typography.bodyLarge
