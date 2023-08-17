@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.app.bookrecordapp
 
 import android.net.Uri
@@ -33,6 +35,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -56,6 +59,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Query
 import androidx.room.Room
 import com.app.bookrecordapp.compose.TranslationScreen
 import com.app.bookrecordapp.data.AppDatabase
@@ -64,10 +68,17 @@ import com.app.bookrecordapp.ui.theme.BookRecordAppTheme
 import com.app.bookrecordapp.vm.StopWatchViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.time.LocalDateTime.*
 import java.time.format.DateTimeFormatter
 import java.util.UUID
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import coil.compose.rememberImagePainter
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.http.GET
 
 
 class MainActivity : ComponentActivity() {
@@ -349,7 +360,7 @@ fun MyProfile() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            
+
             Text(text = "나의 상태")
 
 
@@ -359,7 +370,7 @@ fun MyProfile() {
                     .width(180.dp)
                     .height(50.dp)
             ) {
-                
+
 
                 Text(text = "독서 그래프")
 
@@ -373,6 +384,7 @@ fun MyProfile() {
 
 @Composable
 fun recordGraph() {
+
 
 }
 
@@ -427,7 +439,8 @@ data class Note(
     val id: UUID = UUID.randomUUID(),
     val title: String,
     val description: String,
-    val entryDate: LocalDateTime = LocalDateTime.now()
+    val entryDate: LocalDateTime = LocalDateTime.now(),
+    var selectedImageUri: Uri? = null
 ) {
     companion object {
         fun create(title: String, description: String): Note {
@@ -435,21 +448,7 @@ data class Note(
         }
     }
 }
-//class NotesDataSource{
-//    fun loadNotes():List<Note>{
-//        return listOf(
-//            Note(title="day1", description = "~~~"),
-//            Note(title="day1", description = "~~~"),
-//            Note(title="day1", description = "~~~"),
-//            Note(title="day1", description = "~~~"),
-//            Note(title="day1", description = "~~~"),
-//            Note(title="day1", description = "~~~"),
-//            Note(title="day1", description = "~~~"),
-//            Note(title="day1", description = "~~~"),
-//            Note(title="day1", description = "~~~")
-//        )
-//    }
-//}
+
 
 @Composable
 fun NoteRow(
@@ -484,6 +483,16 @@ fun NoteRow(
                 text = note.entryDate.format(DateTimeFormatter.ofPattern("EEE, d MMM")),
                 style = MaterialTheme.typography.bodyLarge
             )
+            if (note.selectedImageUri != null) {
+                Image(
+                    painter = rememberImagePainter(note.selectedImageUri),
+                    contentDescription = null, // Set an appropriate content description
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp) // Adjust the image height as needed
+                        .padding(vertical = 8.dp)
+                )
+            }
         }
     }
 }
@@ -499,11 +508,22 @@ fun ReadingRecordScreen(navController: NavController) {
         mutableStateOf("")
     }
 
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            selectedImageUri = uri
+
+        }
+    )
+
     val notes = remember { mutableStateListOf<Note>() }
 
     fun removeNoteById(noteId: UUID) {
         notes.removeIf { it.id == noteId }
     }
+
 
 
 
@@ -513,6 +533,17 @@ fun ReadingRecordScreen(navController: NavController) {
     ) {
 
         MyProfile()
+
+        Row {
+            Image(
+                painter = rememberImagePainter(data = selectedImageUri),
+                contentDescription = "",
+                modifier = Modifier
+                    .width(80.dp)
+                    .height(120.dp)
+            )
+
+        }
 
         NoteInputText(
             Modifier
@@ -537,20 +568,47 @@ fun ReadingRecordScreen(navController: NavController) {
             }
         )
 
+        Button(
+            onClick = {
+                launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.tertiary,
+
+                ),
+            modifier = Modifier
+                .width(100.dp)
+                .height(30.dp)
+        ) {
+            Text(
+                "사진 등록",
+                fontSize = 12.sp,
+                fontFamily = FontFamily.Monospace,
+                fontWeight = FontWeight.ExtraBold
+            )
+
+        }
+
+
+
+
         NoteButton(
             text = "저장",
             onClick = {
                 if (title.isNotEmpty() && description.isNotEmpty()) {
-                    val newNote = Note.create(title, description)
+                    val newNote = Note.create(title, description).apply {
+                        this.selectedImageUri = selectedImageUri
+                    }
                     notes.add(newNote)
                     title = ""
                     description = ""
+                    selectedImageUri = null
                 }
             }
         )
+
         Divider(modifier = Modifier.padding(10.dp))
-//
-//        val notesDataSource = NotesDataSource()
+
 
 
         LazyColumn {
@@ -740,6 +798,92 @@ fun StopWatchDisplay(
 //        )
 //        return localDateTime.format(formatter)
 //    }
+//}
+
+//data class WeatherResponse(
+//    val weather: List<Weather>,
+//    val main: Main
+//)
+//
+//data class Weather(
+//    val main: String
+//)
+//
+//data class Main(
+//    val temp: Double
+//)
+//
+//interface WeatherApi {
+//    @GET("weather")
+//    suspend fun getCurrentWeather(
+//        @Query("q") cityName: String,
+//        @Query("appid") apiKey: String
+//    ): WeatherResponse
+//}
+//
+//enum class BookGenre(val genreName: String) {
+//    MYSTERY("Mystery"),
+//    FANTASY("Fantasy"),
+//    ROMANCE("Romance"),
+//    ADVENTURE("Adventure"),
+//    FICTION("Fiction")
+//}
+//
+//fun recommendGenre(weatherState: String): BookGenre {
+//    return when (weatherState) {
+//        "Clear" -> BookGenre.MYSTERY
+//        "Clouds" -> BookGenre.FANTASY
+//        "Rain" -> BookGenre.ROMANCE
+//        "Snow" -> BookGenre.ADVENTURE
+//        else -> BookGenre.FICTION
+//    }
+//}
+//@ExperimentalMaterial3Api
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun WeatherRecommendationScreen(weatherApi: WeatherApi) {
+//    var weatherState by remember { mutableStateOf("Clear") }
+//    var recommendedGenre by remember { mutableStateOf(BookGenre.MYSTERY) }
+//
+//    val scope = rememberCoroutineScope()
+//
+//    LaunchedEffect(true) {
+//        scope.launch {
+//            val weatherResponse = withContext(Dispatchers.IO) {
+//                weatherApi.getCurrentWeather("Seoul", "9e35a1e52cab1d56c5e0526a5c7449e1")
+//            }
+//            weatherState = weatherResponse.weather[0].main
+//            recommendedGenre = recommendGenre(weatherState)
+//        }
+//    }
+//
+//    Scaffold(
+//        content = {
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(16.dp),
+//                verticalArrangement = Arrangement.Center,
+//                horizontalAlignment = Alignment.CenterHorizontally
+//            ) {
+//                Text(text = "오늘의 날씨: $weatherState")
+//                Spacer(modifier = Modifier.height(16.dp))
+//                Text(text = "추천 장르: ${recommendedGenre.genreName}")
+//            }
+//        }
+//    )
+//}
+//
+//@Composable
+//fun App() {
+//    val retrofit = Retrofit.Builder()
+//        .baseUrl("https://api.openweathermap.org/data/2.5/")
+//        .addConverterFactory(MoshiConverterFactory.create())
+//        .build()
+//
+//    val weatherApi = retrofit.create(WeatherApi::class.java)
+//
+//    WeatherRecommendationScreen(weatherApi)
 //}
 
 

@@ -40,6 +40,7 @@ android {
     }
     buildFeatures {
         compose = true
+        dataBinding=true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.1"
@@ -113,5 +114,11 @@ dependencies {
 
     // 언어식별
     implementation ("com.google.mlkit:language-id:17.0.4")
+
+    implementation ("com.google.mlkit:digital-ink-recognition:18.1.0")
+
+    //retrofit2
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-moshi:2.9.0")
 
 }

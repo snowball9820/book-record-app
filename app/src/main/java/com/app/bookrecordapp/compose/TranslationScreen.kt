@@ -1,9 +1,13 @@
 package com.app.bookrecordapp.compose
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.ContentValues
+import android.content.Context
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -242,6 +246,31 @@ fun TranslationScreen(navController: NavController) {
                 Text(text = jaText)
 
                 Text(text = chText)
+
+                Button(
+                    onClick = {
+                        val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newPlainText("Translated Text", enText) // Change enText to jaText or chText as needed
+                        clipboardManager.setPrimaryClip(clip)
+
+
+                        Toast.makeText(context, "Translated text copied to clipboard", Toast.LENGTH_SHORT).show()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.tertiary
+                    ),
+                    modifier = Modifier
+                        .width(120.dp)
+                        .height(60.dp)
+                ) {
+                    Text(
+                        text = "Copy",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily.SansSerif
+                    )
+                }
+
 
                 Column {
 
