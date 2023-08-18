@@ -27,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +37,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.room.Room
 import coil.compose.rememberImagePainter
+import com.app.bookrecordapp.data.AppDatabase
+import com.app.bookrecordapp.data.User
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.translate.TranslateLanguage
@@ -45,6 +49,8 @@ import com.google.mlkit.nl.translate.TranslatorOptions
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.IOException
 
 @Composable
@@ -55,6 +61,19 @@ fun TranslationScreen(navController: NavController) {
 //    val textValue = sharedPref?.getString("textValue", "") ?: ""
 //
 //    var savedText by remember { mutableStateOf(textValue) }
+
+
+    val context = LocalContext.current
+    val db = remember {
+        Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "contacts.db"
+        )
+            .addMigrations()
+            .build()
+    }
+    val scope = rememberCoroutineScope()
 
 
     val koEnTranslator = remember {
@@ -215,10 +234,23 @@ fun TranslationScreen(navController: NavController) {
 
 
                             }
-//                    sharedPref?.edit {
-//                        putString("textValue", savedText)
-//                        apply()
-//                    }
+
+                        val newUser = User(
+                            textId="",
+                            textPw = "",
+                            text = text,
+                            title="",
+                            description = "",
+                            selectedImageUri = null
+
+                        )
+
+                        scope.launch(Dispatchers.IO) {
+                            db.userDao().insertAll(newUser)
+                        }
+
+
+
                     }, enabled = enabled,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.tertiary,
