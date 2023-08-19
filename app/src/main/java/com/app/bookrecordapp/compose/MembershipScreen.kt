@@ -1,5 +1,8 @@
 package com.app.bookrecordapp.compose
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,12 +13,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +38,7 @@ import com.app.bookrecordapp.R
 import com.app.bookrecordapp.data.AppDatabase
 import com.app.bookrecordapp.data.User
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,10 +66,21 @@ fun MembershipScreen(navController: NavController) {
         return textId.isNotEmpty() && textPw.isNotEmpty()
     }
 
+    var shouldAnimate by remember { mutableStateOf(true) }
+
+    LaunchedEffect(shouldAnimate) {
+        if (shouldAnimate) {
+            delay(300) // Adding a delay before starting the animation
+            shouldAnimate = false
+        }
+    }
+
     Box() {
 
+
+
         Image(
-            painter = painterResource(id = R.drawable.greendaisy),
+            painter = painterResource(id = R.drawable.purple_back),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
@@ -79,14 +96,25 @@ fun MembershipScreen(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.book_icon),
-                contentDescription = null,
+            AnimatedVisibility(
+                visible = !shouldAnimate,
+                enter = slideInHorizontally(
+                    initialOffsetX = { fullWidth -> fullWidth },
+                    animationSpec = tween(durationMillis = 1000, delayMillis = 300)
+                ),
                 modifier = Modifier
-                    .clip(MaterialTheme.shapes.medium)
-
-            )
-            Spacer(modifier = Modifier.padding(40.dp))
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.booklogo4),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.medium)
+                        .size(width = 800.dp, height = 300.dp)
+                )
+            }
+            Spacer(modifier = Modifier.padding(4.dp))
 
 
 

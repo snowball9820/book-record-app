@@ -21,6 +21,20 @@ interface UserDAO {
     @Query("SELECT textId FROM user")
     fun getAllTextIds(): List<String>
 
+//    @Query("SELECT title, description FROM User")
+//    fun getTitleDescription():List<String>
+
+    @Query("SELECT title, description, selectedImageUri FROM user")
+    fun getAllTitlesDescriptionsAndImageUris(): List<TitleDescriptionImage>
+
+    data class TitleDescriptionImage(
+        val title: String,
+        val description: String,
+        val selectedImageUri: String? // 이 부분은 User 엔티티에서 Uri 타입을 String으로 변환하였다고 가정
+    )
+
+
+
 
     @Insert
     fun insertAll(vararg users: User)
