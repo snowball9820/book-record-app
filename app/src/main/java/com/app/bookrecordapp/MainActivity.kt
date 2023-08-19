@@ -66,6 +66,7 @@ import com.app.bookrecordapp.compose.RegistrationScreen
 import com.app.bookrecordapp.compose.TranslationScreen
 import com.app.bookrecordapp.data.AppDatabase
 import com.app.bookrecordapp.data.User
+import com.app.bookrecordapp.data.UserDAO
 import com.app.bookrecordapp.stopwatch.StopWatchScreen
 import com.app.bookrecordapp.ui.theme.BookRecordAppTheme
 import com.google.mlkit.vision.digitalink.DigitalInkRecognition
@@ -103,6 +104,16 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Navi() {
 
+    val context = LocalContext.current
+    val userDao = remember {
+        Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "AppDataBase"
+        ).build().userDao()
+
+    }
+
     BookRecordAppTheme {
         // A surface container using the 'background' color from the theme
         Surface(
@@ -133,10 +144,10 @@ fun Navi() {
                     StopWatchScreen(navController)
                 }
                 composable("translationRecord") {
-                    translationRecord(navController)
+                    translationRecordScreen(navController, userDao)
                 }
                 composable("myBook"){
-                    myBookRecord(navController)
+                    myBookRecord(navController, userDao)
                 }
 
 
@@ -159,7 +170,7 @@ fun MyProfile(noteCount: Int,navController: NavController) {
         Image(
             painter = painterResource(
                 id = when {
-                    noteCount >= 20 -> R.drawable.strb_cat
+                    noteCount >= 20 -> R.drawable.apple_cat
                     noteCount >= 15 -> R.drawable.apple_cat
                     noteCount >= 10 -> R.drawable.rabbit_cat
                     noteCount >= 5 -> R.drawable.shark_cat
@@ -413,7 +424,7 @@ fun ReadingRecordScreen(navController: NavController) {
     val scope = rememberCoroutineScope()
 
 //    val users: List<User> = db.userDao().getAll()
-//
+
 //    val userImageUris: List<Uri?> = users.map { user ->
 //        user.selectedImageUri?.let { Uri.parse(it) }
 //    }
@@ -485,9 +496,10 @@ fun ReadingRecordScreen(navController: NavController) {
                         drawingPoints.add(offset)
                     }
                     detectTransformGestures { _, _, _, _ ->
-                        //
+//                        addNewTouchEvent(event)
                     }
                 }
+
         ) {
             for (i in 0 until drawingPoints.size - 1) {
                 drawLine(
@@ -644,17 +656,65 @@ private fun recognizeInk(ink: Ink) {
         }
 }
 
+
 @Composable
-fun translationRecord(navController: NavController){
-    
-    Text(text = "구절")
+fun translationRecordScreen(navController: NavController, userDao: UserDAO) {
 
+    val context = LocalContext.current
+    val db = Room.databaseBuilder(
+        context,
+        AppDatabase::class.java,
+        "contacts.db"
+    )
+        .addMigrations()
+        .build()
 
+    val userDao: UserDAO = db.userDao()
+    val textState = remember { mutableStateOf<List<String>>(emptyList()) }
+    val coroutineScope = rememberCoroutineScope()
 
+    fun fetchTextIds() {
+        try {
+            coroutineScope.launch(Dispatchers.IO) {
+                val allUsers: List<User> = userDao.getAll()
+                val allText = allUsers.map { it.text }
+                textState.value = allText
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(
+            onClick = { fetchTextIds() },
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(text = "나의 책 구절 확인")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        val textIds = textState.value
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(16.dp)
+        ) {
+            items(textIds) { textId ->
+                Text(text = textId)
+            }
+        }
+    }
 }
 
+
+
 @Composable
-fun myBookRecord(navController: NavController){
+fun myBookRecord(navController: NavController,userDao: UserDAO){
 
     Text(text = "책")
 }

@@ -178,7 +178,7 @@ fun TranslationScreen(navController: NavController) {
         //한글 텍스트
         val koRecognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
         val context = LocalContext.current
-        var text by remember { mutableStateOf("") }
+        var trText by remember { mutableStateOf("") }
         var enText by remember { mutableStateOf("") }
         var jaText by remember { mutableStateOf("") }
         var chText by remember { mutableStateOf("") }
@@ -188,7 +188,7 @@ fun TranslationScreen(navController: NavController) {
                 val image = InputImage.fromFilePath(context, it)
                 koRecognizer.process(image)
                     .addOnSuccessListener { result ->
-                        text = result.text
+                        trText = result.text
                     }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -210,25 +210,25 @@ fun TranslationScreen(navController: NavController) {
 
 
                 Text(
-                    text = text,
+                    text = trText,
                     fontSize = 24.sp
                 )
 
                 Button(
                     onClick = {
-                        koEnTranslator.translate(text)
+                        koEnTranslator.translate(trText)
                             .addOnSuccessListener { translatedText ->
                                 enText = translatedText
 
 
                             }
-                        koJaTranslator.translate(text)
+                        koJaTranslator.translate(trText)
                             .addOnSuccessListener { translatedText ->
                                 jaText = translatedText
 
 
                             }
-                        koChTranslator.translate(text)
+                        koChTranslator.translate(trText)
                             .addOnSuccessListener { translatedText ->
                                 chText = translatedText
 
@@ -238,7 +238,7 @@ fun TranslationScreen(navController: NavController) {
                         val newUser = User(
                             textId="",
                             textPw = "",
-                            text = text,
+                            text = trText,
                             title="",
                             description = "",
                             selectedImageUri = null
@@ -309,7 +309,7 @@ fun TranslationScreen(navController: NavController) {
                     val languageIdentifier = LanguageIdentification.getClient()
 
                     Button(onClick = {
-                        languageIdentifier.identifyLanguage(text)
+                        languageIdentifier.identifyLanguage(trText)
                             .addOnSuccessListener { languageCode ->
                                 if (languageCode == "und") {
                                     Log.i(ContentValues.TAG, "Can't identify language.")

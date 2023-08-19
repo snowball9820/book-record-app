@@ -113,7 +113,7 @@ fun MembershipScreen(navController: NavController) {
 
                         textId = textId,
                         textPw = textPw,
-                        text="",
+                        text ="",
                         title="",
                         description = "",
 

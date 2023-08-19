@@ -18,6 +18,10 @@ interface UserDAO {
 //    @Query("SELECT * FROM user WHERE id LIKE :name LIMIT 1 ")
 //    fun findByName(name: String): User
 
+    @Query("SELECT textId FROM user")
+    fun getAllTextIds(): List<String>
+
+
     @Insert
     fun insertAll(vararg users: User)
 
