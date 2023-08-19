@@ -3,7 +3,6 @@
 package com.app.bookrecordapp
 
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.MotionEvent
@@ -12,6 +11,14 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,7 +35,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +52,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -61,14 +68,15 @@ import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import androidx.room.TypeConverter
 import coil.compose.rememberImagePainter
-import com.app.bookrecordapp.compose.ExtractionScreen
-import com.app.bookrecordapp.compose.MembershipScreen
-import com.app.bookrecordapp.compose.MenuScreen
-import com.app.bookrecordapp.compose.RegistrationScreen
-import com.app.bookrecordapp.compose.TranslationScreen
 import com.app.bookrecordapp.data.AppDatabase
 import com.app.bookrecordapp.data.User
-import com.app.bookrecordapp.data.UserDAO
+import com.app.bookrecordapp.screen.ExtractionScreen
+import com.app.bookrecordapp.screen.MembershipScreen
+import com.app.bookrecordapp.screen.MenuScreen
+import com.app.bookrecordapp.screen.RegistrationScreen
+import com.app.bookrecordapp.screen.TranslationScreen
+import com.app.bookrecordapp.screen.myBookRecordScreen
+import com.app.bookrecordapp.screen.translationRecordScreen
 import com.app.bookrecordapp.stopwatch.StopWatchScreen
 import com.app.bookrecordapp.ui.theme.BookRecordAppTheme
 import com.google.mlkit.vision.digitalink.DigitalInkRecognition
@@ -85,7 +93,6 @@ import com.jaikeerthick.composable_graphs.style.LineGraphStyle
 import com.jaikeerthick.composable_graphs.style.LinearGraphVisibility
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalDateTime.*
@@ -165,50 +172,60 @@ fun Navi() {
 
 @Composable
 fun MyProfile(noteCount: Int, navController: NavController) {
+    var visible by remember { mutableStateOf(true) }
+    val density = LocalDensity.current
+
+    val imageResourceId = remember(noteCount) {
+        when {
+            noteCount >= 20 -> R.drawable.apple_cat
+            noteCount >= 15 -> R.drawable.apple_cat
+            noteCount >= 10 -> R.drawable.rabbit_cat
+            noteCount >= 5 -> R.drawable.shark_cat
+            else -> R.drawable.notebook_cat
+        }
+    }
 
     Row {
-        Image(
-            painter = painterResource(
-                id = when {
-                    noteCount >= 20 -> R.drawable.apple_cat
-                    noteCount >= 15 -> R.drawable.apple_cat
-                    noteCount >= 10 -> R.drawable.rabbit_cat
-                    noteCount >= 5 -> R.drawable.shark_cat
-                    else -> R.drawable.notebook_cat
-                }
-            ),
-            contentDescription = "",
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primary)
-                .size(150.dp)
-
-
-        )
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            AnimatedVisibility(
+                visible = visible,
+                enter = slideInVertically(
+                    initialOffsetY = { with(density) { -40.dp.roundToPx() } }
+                ) + expandVertically(expandFrom = Alignment.Top) +
+                        fadeIn(initialAlpha = 0.3f, animationSpec = tween(durationMillis = 1000)), // 1초 지속
+                exit = slideOutVertically() + shrinkVertically() +
+                        fadeOut(animationSpec = tween(durationMillis = 1000)) // 1초 지속
+            ) {
+                Image(
+                    painter = painterResource(id = imageResourceId),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary)
+                        .size(150.dp)
+                )
+            }
 
             Text(text = "나의 상태")
 
-
             Button(
-                onClick = { navController.navigate("graph") },
+                onClick = {
+                    navController.navigate("graph")
+                    // Toggle the visibility to trigger the exit and enter animations
+                    visible = !visible
+                },
                 modifier = Modifier
                     .width(180.dp)
                     .height(50.dp)
             ) {
-
-
                 Text(text = "독서 그래프")
-
             }
-
         }
-
     }
-
 }
+
 
 
 @Composable
@@ -572,6 +589,8 @@ fun ReadingRecordScreen(navController: NavController) {
                     )
 
                 }
+                Spacer(modifier =
+                    Modifier.padding(4.dp))
                 Button(
                     onClick = {
                         if (title.isNotEmpty() && description.isNotEmpty()) {
@@ -601,7 +620,6 @@ fun ReadingRecordScreen(navController: NavController) {
                     )
 
                 }
-
 
                 NoteButton(
                     text = "저장",
@@ -673,153 +691,7 @@ private fun recognizeInk(ink: Ink) {
 }
 
 
-@Composable
-fun translationRecordScreen(navController: NavController, userDao: UserDAO) {
 
-    val context = LocalContext.current
-    val db = Room.databaseBuilder(
-        context,
-        AppDatabase::class.java,
-        "contacts.db"
-    )
-        .addMigrations()
-        .build()
-
-    val userDao: UserDAO = db.userDao()
-    val textState = remember { mutableStateOf<List<String>>(emptyList()) }
-    val coroutineScope = rememberCoroutineScope()
-
-    fun fetchTextIds() {
-        try {
-            coroutineScope.launch(Dispatchers.IO) {
-                val allUsers: List<User> = userDao.getAll()
-                val allText = allUsers.map { it.text }
-                textState.value = allText
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(
-            onClick = { fetchTextIds() },
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(text = "나의 책 구절 확인")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        val textIds = textState.value
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp)
-        ) {
-            items(textIds) { text ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    shape = MaterialTheme.shapes.medium,
-                ) {
-                    Text(
-                        text = text,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
-fun myBookRecordScreen(navController: NavController, userDao: UserDAO) {
-
-    val context = LocalContext.current
-
-    val db = Room.databaseBuilder(
-        context,
-        AppDatabase::class.java,
-        "contacts.db"
-    )
-        .addMigrations()
-        .build()
-
-
-    var titlesDescriptionsImages by remember { mutableStateOf(emptyList<UserDAO.TitleDescriptionImage>()) }
-    var showDetails = remember { mutableStateOf(false) }
-
-    val coroutineScope = rememberCoroutineScope()
-
-    LaunchedEffect(showDetails.value) {
-        if (showDetails.value) {
-            coroutineScope.launch {
-                val fetchedData = withContext(Dispatchers.IO) {
-                    db.userDao().getAllTitlesDescriptionsAndImageUris()
-                }
-                titlesDescriptionsImages = fetchedData
-            }
-        }
-    }
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(
-            onClick = { showDetails.value = !showDetails.value },
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(text = "나의 기록")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (showDetails.value) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                items(titlesDescriptionsImages) { data ->
-                    data.selectedImageUri?.let { imageUriString ->
-                        val imageUri = UriTypeConverter().toUri(imageUriString)
-                        imageUri?.let { uri ->
-                            val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                            context.contentResolver.takePersistableUriPermission(uri, flag)
-                        }
-                    }
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
-                        Text(text = "제목: ${data.title}")
-                        Text(text = "메모: ${data.description}")
-                        data.selectedImageUri?.let { imageUriString ->
-                            val imageUri = UriTypeConverter().toUri(imageUriString)
-                            imageUri?.let { uri ->
-                                Image(
-                                    painter = rememberImagePainter(uri),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(100.dp)
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Divider(modifier = Modifier.fillMaxWidth())
-                    }
-                }
-            }
-        }
-    }
-}
 
 
 

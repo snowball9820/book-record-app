@@ -1,4 +1,4 @@
-package com.app.bookrecordapp.compose
+package com.app.bookrecordapp.screen
 
 import android.app.Activity
 import android.content.ClipData

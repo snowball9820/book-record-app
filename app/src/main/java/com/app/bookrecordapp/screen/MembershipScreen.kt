@@ -1,4 +1,4 @@
-package com.app.bookrecordapp.compose
+package com.app.bookrecordapp.screen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -80,7 +80,7 @@ fun MembershipScreen(navController: NavController) {
 
 
         Image(
-            painter = painterResource(id = R.drawable.purple_back),
+            painter = painterResource(id = R.drawable.purple05_back),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
@@ -107,7 +107,7 @@ fun MembershipScreen(navController: NavController) {
                     .align(Alignment.CenterHorizontally)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.booklogo4),
+                    painter = painterResource(id = R.drawable.bookreport03_logo),
                     contentDescription = null,
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.medium)
