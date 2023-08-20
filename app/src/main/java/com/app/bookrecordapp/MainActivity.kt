@@ -186,10 +186,10 @@ fun MyProfile(noteCount: Int, navController: NavController) {
 
     val imageResourceId = remember(noteCount) {
         when {
-            noteCount >= 20 -> R.drawable.apple_cat
-            noteCount >= 15 -> R.drawable.apple_cat
-            noteCount >= 10 -> R.drawable.rabbit_cat
-            noteCount >= 5 -> R.drawable.shark_cat
+            noteCount >= 20 -> R.drawable.shark_cat
+            noteCount >= 15 -> R.drawable.strb_cat
+            noteCount >= 10 -> R.drawable.apple_cat
+            noteCount >= 5 -> R.drawable.rabbit_cat
             else -> R.drawable.notebook_cat
         }
     }
