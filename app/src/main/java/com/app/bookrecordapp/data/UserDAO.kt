@@ -8,23 +8,17 @@ import androidx.room.Query
 @Dao
 interface UserDAO {
 
-    @Query("SELECT * FROM user")
+    @Query("SELECT * FROM user WHERE text IS NOT NULL AND text != ''")
     fun getAll(): List<User>
 
     @Query("SELECT * FROM user WHERE uid IN (:userIds)")
     fun loadAllByIds(userIds: IntArray): List<User>
 
-//    //SQL Query 문법 찾아 보기
-//    @Query("SELECT * FROM user WHERE id LIKE :name LIMIT 1 ")
-//    fun findByName(name: String): User
-
     @Query("SELECT textId FROM user")
     fun getAllTextIds(): List<String>
 
-//    @Query("SELECT title, description FROM User")
-//    fun getTitleDescription():List<String>
 
-    @Query("SELECT title, description, selectedImageUri FROM user")
+    @Query("SELECT title, description, selectedImageUri FROM user WHERE title IS NOT NULL AND title != '' AND description IS NOT NULL AND description != ''")
     fun getAllTitlesDescriptionsAndImageUris(): List<TitleDescriptionImage>
 
     data class TitleDescriptionImage(

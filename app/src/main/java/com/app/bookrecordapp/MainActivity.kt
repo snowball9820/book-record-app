@@ -3,8 +3,10 @@
 package com.app.bookrecordapp
 
 
+import ExtractionScreen
 import android.net.Uri
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.MotionEvent
 import androidx.activity.ComponentActivity
@@ -12,19 +14,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -55,7 +48,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -73,7 +65,6 @@ import androidx.room.TypeConverter
 import coil.compose.rememberImagePainter
 import com.app.bookrecordapp.data.AppDatabase
 import com.app.bookrecordapp.data.User
-import com.app.bookrecordapp.screen.ExtractionScreen
 import com.app.bookrecordapp.screen.MembershipScreen
 import com.app.bookrecordapp.screen.MenuScreen
 import com.app.bookrecordapp.screen.RegistrationScreen
@@ -133,7 +124,7 @@ fun Navi() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            var isFavorite by rememberSaveable{ mutableStateOf(false) }
+            var isFavorite by rememberSaveable { mutableStateOf(false) }
 
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = "membership") {
@@ -166,8 +157,8 @@ fun Navi() {
                 composable("myBook") {
                     myBookRecordScreen(navController, userDao, isFavorite) { favorite ->
                         isFavorite = favorite
-                }
                     }
+                }
 
 
             }
@@ -180,9 +171,7 @@ fun Navi() {
 
 
 @Composable
-fun MyProfile(noteCount: Int, navController: NavController) {
-    var visible by remember { mutableStateOf(true) }
-    val density = LocalDensity.current
+fun MyProfile(noteCount: Int) {
 
     val imageResourceId = remember(noteCount) {
         when {
@@ -199,33 +188,20 @@ fun MyProfile(noteCount: Int, navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AnimatedVisibility(
-                visible = visible,
-                enter = slideInVertically(
-                    initialOffsetY = { with(density) { -40.dp.roundToPx() } }
-                ) + expandVertically(expandFrom = Alignment.Top) +
-                        fadeIn(
-                            initialAlpha = 0.3f,
-                            animationSpec = tween(durationMillis = 1000)
-                        ),
-                exit = slideOutVertically() + shrinkVertically() +
-                        fadeOut(animationSpec = tween(durationMillis = 1000)) // 1초 지속
-            ) {
-                Image(
-                    painter = painterResource(id = imageResourceId),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.primary)
-                        .size(150.dp)
-                )
-            }
+
+            Image(
+                painter = painterResource(id = imageResourceId),
+                contentDescription = "",
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.primary)
+                    .size(150.dp)
+            )
 
             Text(text = "나의 상태")
 
             Button(
                 onClick = {
-                    navController.navigate("graph")
-                    visible = !visible
+
                 },
                 modifier = Modifier
                     .width(180.dp)
@@ -250,11 +226,11 @@ fun recordGraph(notes: List<Note>, navController: NavController) {
                 isCrossHairVisible = true,
             ),
             colors = LinearGraphColors(
-                lineColor = Color(0xFFff9f3d),
-                pointColor = androidx.compose.ui.graphics.Color.Green,
-                clickHighlightColor = Color(0xFFcfff9f3d),
+                lineColor = Color(0xFFDDA0DD),
+                pointColor = androidx.compose.ui.graphics.Color.LightGray,
+                clickHighlightColor = Color(0xFFDDA0DD),
                 fillGradient = Brush.verticalGradient(
-                    0.2f to Color(0xFFcfff8912), 0.5f to Color(0xFF5cff9f3d)
+                    0.2f to Color(0xFF9966CC), 0.5f to Color(0xFF5F4B8B)
                 )
             ),
             height = 100.dp
@@ -295,7 +271,7 @@ fun NoteInputText(
     TextField(
         value = text,
         onValueChange = onTextChange,
-        colors = TextFieldDefaults.textFieldColors(MaterialTheme.colorScheme.primary),
+        colors = TextFieldDefaults.textFieldColors(MaterialTheme.colorScheme.tertiary),
         maxLines = maxLine,
         label = { Text(text = label) },
         keyboardOptions = KeyboardOptions.Default.copy(
@@ -307,6 +283,7 @@ fun NoteInputText(
         }),
         modifier = modifier
     )
+
 }
 
 @Composable
@@ -407,12 +384,8 @@ class UriTypeConverter {
 fun ReadingRecordScreen(navController: NavController) {
 
 
-    var title by remember {
-        mutableStateOf("")
-    }
-    var description by remember {
-        mutableStateOf("")
-    }
+    var title by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -457,17 +430,18 @@ fun ReadingRecordScreen(navController: NavController) {
             .pointerInput(Unit) {
                 detectTransformGestures { _, _, _, _ ->
 
+
                 }
             }
     ) {
 
-        MyProfile(noteCount = notes.size, navController)
+        MyProfile(noteCount = notes.size)
 
         Row {
 
 
         }
-        fun addNewTouchEvent(event: MotionEvent) {
+        fun addNewTouchEvent(event: MotionEvent,drawingPoints: MutableList<Offset>) {
             val action = event.actionMasked
             val x = event.x
             val y = event.y
@@ -497,21 +471,27 @@ fun ReadingRecordScreen(navController: NavController) {
             }
         }
 
-
-
         Canvas(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(180.dp)
                 .pointerInput(Unit) {
-                    detectTapGestures { offset ->
-                        drawingPoints.add(offset)
-                    }
-                    detectTransformGestures { _, _, _, _ ->
+                    detectTransformGestures { _, pan, _, _ ->
+                        val offsetX = pan.x
+                        val offsetY = pan.y
+                        drawingPoints.add(Offset(offsetX, offsetY))
 
+                        val event = MotionEvent.obtain(
+                            SystemClock.uptimeMillis(),
+                            SystemClock.uptimeMillis(),
+                            MotionEvent.ACTION_MOVE,
+                            offsetX,
+                            offsetY,
+                            0
+                        )
+                        addNewTouchEvent(event, drawingPoints)
                     }
                 }
-
         ) {
             for (i in 0 until drawingPoints.size - 1) {
                 drawLine(
@@ -522,7 +502,6 @@ fun ReadingRecordScreen(navController: NavController) {
                 )
             }
         }
-
 
         fun createInkFromDrawingPoints(points: List<Offset>): Ink {
             val inkBuilder = Ink.builder()
@@ -536,11 +515,8 @@ fun ReadingRecordScreen(navController: NavController) {
             return inkBuilder.build()
         }
 
+
         Spacer(modifier = Modifier.padding(12.dp))
-
-
-
-
 
         LazyColumn(
             verticalArrangement = Arrangement.Center,
@@ -550,7 +526,7 @@ fun ReadingRecordScreen(navController: NavController) {
                 Row {
                     Card(
                         modifier = Modifier
-                            .padding(start=8.dp)
+                            .padding(start = 8.dp)
                     ) {
                         Image(
                             painter = rememberImagePainter(data = selectedImageUri),
@@ -562,8 +538,10 @@ fun ReadingRecordScreen(navController: NavController) {
 
 
                     }
-                    Spacer(modifier = Modifier
-                        .padding(6.dp))
+                    Spacer(
+                        modifier = Modifier
+                            .padding(6.dp)
+                    )
                     Column {
                         NoteInputText(
                             Modifier
@@ -618,7 +596,7 @@ fun ReadingRecordScreen(navController: NavController) {
                             "책 등록",
                             fontSize = 12.sp,
                             fontFamily = FontFamily.Monospace,
-                            fontWeight = FontWeight.ExtraBold
+                            fontWeight = FontWeight.ExtraBold,
                         )
 
                     }
@@ -636,6 +614,9 @@ fun ReadingRecordScreen(navController: NavController) {
                                 title = ""
                                 description = ""
                                 selectedImageUri = null
+
+                                val ink = inkBuilder.build()
+                                recognizeInk(ink)
                             }
 
                         },
@@ -664,11 +645,6 @@ fun ReadingRecordScreen(navController: NavController) {
                     text = "저장",
                     onClick = {
 
-                        val ink = inkBuilder.build()
-                        recognizeInk(ink)
-
-
-                        //
                         val newUser = User(
                             textId = "",
                             textPw = "",

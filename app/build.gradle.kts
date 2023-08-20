@@ -115,6 +115,7 @@ dependencies {
     // 언어식별
     implementation ("com.google.mlkit:language-id:17.0.4")
 
+    //Ink
     implementation ("com.google.mlkit:digital-ink-recognition:18.1.0")
 
     //retrofit2

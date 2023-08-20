@@ -39,7 +39,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
@@ -165,13 +164,12 @@ fun TranslationScreen(navController: NavController) {
                 ),
             modifier = Modifier
                 .width(120.dp)
-                .height(60.dp)
+                .height(50.dp)
                 .padding(top = 12.dp)
         ) {
             Text(
                 "문장 등록",
                 fontSize = 16.sp,
-                fontFamily = FontFamily.Monospace,
                 fontWeight = FontWeight.ExtraBold
             )
 
@@ -294,7 +292,7 @@ fun TranslationScreen(navController: NavController) {
                         ),
                     modifier = Modifier
                         .width(120.dp)
-                        .height(60.dp)
+                        .height(50.dp)
 
 
                 ) {
@@ -302,8 +300,7 @@ fun TranslationScreen(navController: NavController) {
                     Text(
                         text = "번역",
                         fontWeight = FontWeight.Bold,
-                        fontSize = 24.sp,
-                        fontFamily = FontFamily.SansSerif
+                        fontSize = 16.sp,
                     )
 
 
@@ -382,14 +379,13 @@ fun TranslationScreen(navController: NavController) {
                         containerColor = MaterialTheme.colorScheme.tertiary
                     ),
                     modifier = Modifier
-                        .width(120.dp)
-                        .height(60.dp)
+                        .width(100.dp)
+                        .height(40.dp)
                 ) {
                     Text(
-                        text = "Copy",
+                        text = "복사",
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
-                        fontFamily = FontFamily.SansSerif
                     )
                 }
 
