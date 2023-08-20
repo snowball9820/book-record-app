@@ -15,7 +15,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +30,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.navigation.NavController
 import androidx.room.Room
 import coil.compose.rememberImagePainter
@@ -94,8 +100,12 @@ fun myBookRecordScreen(navController: NavController, userDao: UserDAO) {
                             .fillMaxWidth()
                             .padding(8.dp),
                         shape = MaterialTheme.shapes.medium,
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 12.dp
+                        )
 
-                        ) {
+
+                    ) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -114,7 +124,21 @@ fun myBookRecordScreen(navController: NavController, userDao: UserDAO) {
                                 }
                                 Column {
                                     Text(text = "제목: ${data.title}")
-                                    Text(text = "메모: ${data.description}")
+                                    Text(
+                                        text = "메모: ${data.description}",
+                                        style = LocalTextStyle.current.merge(
+                                            TextStyle(
+                                                lineHeight = 1.5.em,
+                                                platformStyle = PlatformTextStyle(
+                                                    includeFontPadding = false
+                                                ),
+                                                lineHeightStyle = LineHeightStyle(
+                                                    alignment = LineHeightStyle.Alignment.Center,
+                                                    trim = LineHeightStyle.Trim.None
+                                                )
+                                            )
+                                        ),
+                                    )
 
                                 }
 

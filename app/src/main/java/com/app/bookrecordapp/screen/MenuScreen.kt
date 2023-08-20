@@ -128,18 +128,24 @@ fun MenuButton(
         colors = CardDefaults.cardColors(
             MaterialTheme.colorScheme.secondary
 
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 12.dp
         )
     ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier.fillMaxSize()
         ) {
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+
+            ) {
                 Image(
                     painter = painterResource(id = imageResource),
                     contentDescription = null,
                     modifier = Modifier
-                        .padding(top = 4.dp)
+                        .padding(top = 8.dp)
                         .size(width = 48.dp, height = 48.dp)
                 )
                 Text(

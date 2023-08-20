@@ -195,7 +195,10 @@ fun MyProfile(noteCount: Int, navController: NavController) {
                 enter = slideInVertically(
                     initialOffsetY = { with(density) { -40.dp.roundToPx() } }
                 ) + expandVertically(expandFrom = Alignment.Top) +
-                        fadeIn(initialAlpha = 0.3f, animationSpec = tween(durationMillis = 1000)), // 1초 지속
+                        fadeIn(
+                            initialAlpha = 0.3f,
+                            animationSpec = tween(durationMillis = 1000)
+                        ),
                 exit = slideOutVertically() + shrinkVertically() +
                         fadeOut(animationSpec = tween(durationMillis = 1000)) // 1초 지속
             ) {
@@ -213,7 +216,6 @@ fun MyProfile(noteCount: Int, navController: NavController) {
             Button(
                 onClick = {
                     navController.navigate("graph")
-                    // Toggle the visibility to trigger the exit and enter animations
                     visible = !visible
                 },
                 modifier = Modifier
@@ -225,7 +227,6 @@ fun MyProfile(noteCount: Int, navController: NavController) {
         }
     }
 }
-
 
 
 @Composable
@@ -438,12 +439,6 @@ fun ReadingRecordScreen(navController: NavController) {
     }
     val scope = rememberCoroutineScope()
 
-//    val users: List<User> = db.userDao().getAll()
-
-//    val userImageUris: List<Uri?> = users.map { user ->
-//        user.selectedImageUri?.let { Uri.parse(it) }
-//    }
-
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -542,6 +537,7 @@ fun ReadingRecordScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
+
                 NoteInputText(
                     Modifier
                         .padding(top = 9.dp, bottom = 8.dp),
@@ -555,7 +551,8 @@ fun ReadingRecordScreen(navController: NavController) {
                 )
                 NoteInputText(
                     Modifier
-                        .padding(top = 9.dp, bottom = 8.dp),
+                        .padding(top = 9.dp, bottom = 8.dp)
+                        .height(120.dp),
                     text = description,
                     label = "기록 추가",
                     onTextChange = {
@@ -589,8 +586,10 @@ fun ReadingRecordScreen(navController: NavController) {
                     )
 
                 }
-                Spacer(modifier =
-                    Modifier.padding(4.dp))
+                Spacer(
+                    modifier =
+                    Modifier.padding(4.dp)
+                )
                 Button(
                     onClick = {
                         if (title.isNotEmpty() && description.isNotEmpty()) {
@@ -689,10 +688,6 @@ private fun recognizeInk(ink: Ink) {
 
         }
 }
-
-
-
-
 
 
 @Preview(showBackground = true)
