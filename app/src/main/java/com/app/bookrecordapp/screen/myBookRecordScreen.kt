@@ -2,6 +2,7 @@ package com.app.bookrecordapp.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,10 +14,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -46,7 +52,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-fun myBookRecordScreen(navController: NavController, userDao: UserDAO) {
+fun myBookRecordScreen(navController: NavController,
+                       userDao: UserDAO,
+                       isFavorite:Boolean,
+                       onTabFavorite:(Boolean)->Unit) {
+
 
     val context = LocalContext.current
 
@@ -120,9 +130,25 @@ fun myBookRecordScreen(navController: NavController, userDao: UserDAO) {
                                             contentDescription = null,
                                             modifier = Modifier.size(100.dp)
                                         )
+
                                     }
                                 }
                                 Column {
+                                    Box(modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.TopEnd,
+                                    ){
+                                        IconButton(onClick = {
+                                            onTabFavorite(!isFavorite)
+                                        }) {
+                                            Icon(
+                                                imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                                contentDescription = "",
+                                                tint = MaterialTheme.colorScheme.tertiary
+                                            )
+
+                                        }
+
+                                    }
                                     Text(text = "제목: ${data.title}")
                                     Text(
                                         text = "메모: ${data.description}",

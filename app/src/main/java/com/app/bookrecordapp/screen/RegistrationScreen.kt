@@ -75,7 +75,7 @@ fun RegistrationScreen(navController: NavController) {
                     navController.navigate("menu")
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.tertiary
+                    containerColor = MaterialTheme.colorScheme.secondary
                 ),
             ) {
                 Text(text = "시작")

@@ -5,6 +5,7 @@ package com.app.bookrecordapp
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -35,6 +36,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -43,6 +45,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -130,6 +133,8 @@ fun Navi() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+            var isFavorite by rememberSaveable{ mutableStateOf(false) }
+
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = "membership") {
                 composable("membership") {
@@ -154,11 +159,15 @@ fun Navi() {
                     StopWatchScreen(navController)
                 }
                 composable("translationRecord") {
-                    translationRecordScreen(navController, userDao)
+                    translationRecordScreen(navController, userDao, isFavorite) { favorite ->
+                        isFavorite = favorite
+                    }
                 }
                 composable("myBook") {
-                    myBookRecordScreen(navController, userDao)
+                    myBookRecordScreen(navController, userDao, isFavorite) { favorite ->
+                        isFavorite = favorite
                 }
+                    }
 
 
             }
@@ -455,13 +464,7 @@ fun ReadingRecordScreen(navController: NavController) {
         MyProfile(noteCount = notes.size, navController)
 
         Row {
-            Image(
-                painter = rememberImagePainter(data = selectedImageUri),
-                contentDescription = "",
-                modifier = Modifier
-                    .width(80.dp)
-                    .height(120.dp)
-            )
+
 
         }
         fun addNewTouchEvent(event: MotionEvent) {
@@ -499,13 +502,13 @@ fun ReadingRecordScreen(navController: NavController) {
         Canvas(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(150.dp)
+                .height(180.dp)
                 .pointerInput(Unit) {
                     detectTapGestures { offset ->
                         drawingPoints.add(offset)
                     }
                     detectTransformGestures { _, _, _, _ ->
-//                        addNewTouchEvent(event)
+
                     }
                 }
 
@@ -520,6 +523,7 @@ fun ReadingRecordScreen(navController: NavController) {
             }
         }
 
+
         fun createInkFromDrawingPoints(points: List<Offset>): Ink {
             val inkBuilder = Ink.builder()
             val strokeBuilder = Ink.Stroke.builder()
@@ -532,93 +536,129 @@ fun ReadingRecordScreen(navController: NavController) {
             return inkBuilder.build()
         }
 
+        Spacer(modifier = Modifier.padding(12.dp))
+
+
+
+
+
         LazyColumn(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
+                Row {
+                    Card(
+                        modifier = Modifier
+                            .padding(start=8.dp)
+                    ) {
+                        Image(
+                            painter = rememberImagePainter(data = selectedImageUri),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .width(100.dp)
+                                .height(200.dp)
+                        )
 
-                NoteInputText(
-                    Modifier
-                        .padding(top = 9.dp, bottom = 8.dp),
-                    text = title,
-                    label = "제목",
-                    onTextChange = {
-                        if (it.all { char ->
-                                char.isLetter() || char.isWhitespace()
-                            }) title = it
+
                     }
-                )
-                NoteInputText(
-                    Modifier
-                        .padding(top = 9.dp, bottom = 8.dp)
-                        .height(120.dp),
-                    text = description,
-                    label = "기록 추가",
-                    onTextChange = {
-                        if (it.all { char ->
-                                char.isLetter() || char.isWhitespace()
-                            }) description = it
-                    }
-                )
-
-                Button(
-                    onClick = {
-                        launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                        val ink = createInkFromDrawingPoints(drawingPoints)
-                        recognizeInk(ink)
-
-                        drawingPoints.clear()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary,
-
-                        ),
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(30.dp)
-                ) {
-                    Text(
-                        "책 등록",
-                        fontSize = 12.sp,
-                        fontFamily = FontFamily.Monospace,
-                        fontWeight = FontWeight.ExtraBold
-                    )
-
-                }
-                Spacer(
-                    modifier =
-                    Modifier.padding(4.dp)
-                )
-                Button(
-                    onClick = {
-                        if (title.isNotEmpty() && description.isNotEmpty()) {
-                            val newNote = Note.create(title, description).apply {
-                                this.selectedImageUri = selectedImageUri
+                    Spacer(modifier = Modifier
+                        .padding(6.dp))
+                    Column {
+                        NoteInputText(
+                            Modifier
+                                .padding(top = 9.dp, bottom = 8.dp, end = 8.dp)
+                                .fillMaxWidth(),
+                            text = title,
+                            label = "제목",
+                            onTextChange = {
+                                if (it.all { char ->
+                                        char.isLetter() || char.isWhitespace()
+                                    }) title = it
                             }
-                            notes.add(newNote)
-                            title = ""
-                            description = ""
-                            selectedImageUri = null
-                        }
+                        )
+                        NoteInputText(
+                            Modifier
+                                .padding(top = 9.dp, bottom = 8.dp, end = 8.dp)
+                                .fillMaxWidth()
+                                .height(120.dp),
+                            text = description,
+                            label = "기록 추가",
+                            onTextChange = {
+                                if (it.all { char ->
+                                        char.isLetter() || char.isWhitespace()
+                                    }) description = it
+                            }
+                        )
 
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary,
+                    }
 
-                        ),
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(30.dp)
-                ) {
-                    Text(
-                        "임시 저장",
-                        fontSize = 12.sp,
-                        fontFamily = FontFamily.Monospace,
-                        fontWeight = FontWeight.ExtraBold
-                    )
 
                 }
+
+                Row {
+
+                    Button(
+                        onClick = {
+                            launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                            val ink = createInkFromDrawingPoints(drawingPoints)
+                            recognizeInk(ink)
+
+                            drawingPoints.clear()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.tertiary,
+
+                            ),
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(30.dp)
+                    ) {
+                        Text(
+                            "책 등록",
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+
+                    }
+                    Spacer(
+                        modifier =
+                        Modifier.padding(4.dp)
+                    )
+                    Button(
+                        onClick = {
+                            if (title.isNotEmpty() && description.isNotEmpty()) {
+                                val newNote = Note.create(title, description).apply {
+                                    this.selectedImageUri = selectedImageUri
+                                }
+                                notes.add(newNote)
+                                title = ""
+                                description = ""
+                                selectedImageUri = null
+                            }
+
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.tertiary,
+
+                            ),
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(30.dp)
+                    ) {
+                        Text(
+                            "임시 저장",
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+
+                    }
+
+                }
+
+
 
                 NoteButton(
                     text = "저장",
@@ -680,12 +720,16 @@ private fun recognizeInk(ink: Ink) {
 
     recognizer.recognize(ink)
         .addOnSuccessListener { result: RecognitionResult ->
+            if (result.candidates.isNotEmpty()) {
+                val recognizedText = result.candidates[0].text
 
-            val recognizedText = result.candidates[0].text
-
+                Log.d("RecognizedText", "Recognized Text: $recognizedText")
+            } else {
+                Log.d("RecognizedText", "No candidates found in recognition result.")
+            }
         }
         .addOnFailureListener { e: Exception ->
-
+            Log.e("RecognizedText", "Error during recognition: $e")
         }
 }
 

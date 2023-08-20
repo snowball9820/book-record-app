@@ -17,18 +17,21 @@ val maruburi = FontFamily(
     Font(R.font.maruburi_bold, FontWeight.Bold,FontStyle.Normal)
 
 )
+val bmeuljiro=FontFamily(
+    Font(R.font.mbeuljiro,FontWeight.Light,FontStyle.Normal)
+)
 
 // Set of Material typography styles to start with
 val Typography = Typography(
 
     bodyMedium = TextStyle(
-        fontFamily = maruburi,
-        fontWeight = FontWeight.Bold,
+        fontFamily = bmeuljiro,
+        fontWeight = FontWeight.Light,
         fontSize = 16.sp
     ),
     bodyLarge = TextStyle(
-        fontFamily = maruburi,
-        fontWeight = FontWeight.Bold,
+        fontFamily = bmeuljiro,
+        fontWeight = FontWeight.Light,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
