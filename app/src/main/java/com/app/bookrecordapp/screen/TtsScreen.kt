@@ -1,11 +1,13 @@
 package com.app.bookrecordapp.screen
 
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -16,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.app.bookrecordapp.R
 import com.app.bookrecordapp.vm.TtsViewModel
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,6 +41,16 @@ fun TtsScreen(navController: NavController, viewModel: TtsViewModel = viewModel(
     val state = viewModel.state.value
     val context = LocalContext.current
 
+
+    var shouldAnimate by remember { mutableStateOf(true) }
+
+    LaunchedEffect(shouldAnimate) {
+        if (shouldAnimate) {
+            delay(300)
+            shouldAnimate = false
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -44,19 +58,26 @@ fun TtsScreen(navController: NavController, viewModel: TtsViewModel = viewModel(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        var isScaled by remember { mutableStateOf(false) }
-
-        Image(
-            painter = painterResource(id = R.drawable.playimage_icon),
-            contentDescription = "",
+        AnimatedVisibility(
+            visible = !shouldAnimate,
+            enter = slideInHorizontally(
+                initialOffsetX = { fullWidth -> fullWidth },
+                animationSpec = tween(durationMillis = 1000, delayMillis = 300)
+            ),
             modifier = Modifier
-                .height(if (isScaled) 240.dp else 200.dp)
-                .width(if (isScaled) 240.dp else 200.dp)
-                .clickable {
-                    isScaled = !isScaled
-                }
-                .animateContentSize()
-        )
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.playimage_icon),
+                contentDescription = "",
+                modifier = Modifier
+                    .height(200.dp)
+                    .width(200.dp)
+
+            )
+
+        }
 
         OutlinedTextField(
             value = state.text,
