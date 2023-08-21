@@ -2,10 +2,8 @@ package com.app.bookrecordapp.screen
 
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -50,7 +48,6 @@ import coil.compose.rememberImagePainter
 import com.app.bookrecordapp.data.AppDatabase
 import com.app.bookrecordapp.data.User
 import com.google.mlkit.common.model.DownloadConditions
-import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
@@ -389,66 +386,66 @@ fun TranslationScreen(navController: NavController) {
                     )
                 }
 
-                Spacer(modifier = Modifier.padding(12.dp))
+//                Spacer(modifier = Modifier.padding(12.dp))
 
-                Column {
-
-                    val languageIdentifier = LanguageIdentification.getClient()
-
-                    Button(onClick = {
-                        languageIdentifier.identifyLanguage(trText)
-                            .addOnSuccessListener { languageCode ->
-                                if (languageCode == "und") {
-                                    Log.i(ContentValues.TAG, "Can't identify language.")
-                                } else {
-                                    Log.i(ContentValues.TAG, "Language: $languageCode")
-                                }
-                            }
-                            .addOnFailureListener {
-
-                            }
-
-                        languageIdentifier.identifyLanguage(enText)
-                            .addOnSuccessListener { languageCode ->
-                                if (languageCode == "und") {
-                                    Log.i(ContentValues.TAG, "Can't identify language.")
-                                } else {
-                                    Log.i(ContentValues.TAG, "Language: $languageCode")
-                                }
-                            }
-                            .addOnFailureListener {
-
-                            }
-
-                        languageIdentifier.identifyLanguage(jaText)
-                            .addOnSuccessListener { languageCode ->
-                                if (languageCode == "und") {
-                                    Log.i(ContentValues.TAG, "Can't identify language.")
-                                } else {
-                                    Log.i(ContentValues.TAG, "Language: $languageCode")
-                                }
-                            }
-                            .addOnFailureListener {
-
-                            }
-
-                        languageIdentifier.identifyLanguage(chText)
-                            .addOnSuccessListener { languageCode ->
-                                if (languageCode == "und") {
-                                    Log.i(ContentValues.TAG, "Can't identify language.")
-                                } else {
-                                    Log.i(ContentValues.TAG, "Language: $languageCode")
-                                }
-                            }
-                            .addOnFailureListener {
-
-                            }
-                    }
-                    ) {
-                        Text(text = "언어 식별")
-
-                    }
-                }
+//                Column {
+//
+//                    val languageIdentifier = LanguageIdentification.getClient()
+//
+//                    Button(onClick = {
+//                        languageIdentifier.identifyLanguage(trText)
+//                            .addOnSuccessListener { languageCode ->
+//                                if (languageCode == "und") {
+//                                    Log.i(ContentValues.TAG, "Can't identify language.")
+//                                } else {
+//                                    Log.i(ContentValues.TAG, "Language: $languageCode")
+//                                }
+//                            }
+//                            .addOnFailureListener {
+//
+//                            }
+//
+//                        languageIdentifier.identifyLanguage(enText)
+//                            .addOnSuccessListener { languageCode ->
+//                                if (languageCode == "und") {
+//                                    Log.i(ContentValues.TAG, "Can't identify language.")
+//                                } else {
+//                                    Log.i(ContentValues.TAG, "Language: $languageCode")
+//                                }
+//                            }
+//                            .addOnFailureListener {
+//
+//                            }
+//
+//                        languageIdentifier.identifyLanguage(jaText)
+//                            .addOnSuccessListener { languageCode ->
+//                                if (languageCode == "und") {
+//                                    Log.i(ContentValues.TAG, "Can't identify language.")
+//                                } else {
+//                                    Log.i(ContentValues.TAG, "Language: $languageCode")
+//                                }
+//                            }
+//                            .addOnFailureListener {
+//
+//                            }
+//
+//                        languageIdentifier.identifyLanguage(chText)
+//                            .addOnSuccessListener { languageCode ->
+//                                if (languageCode == "und") {
+//                                    Log.i(ContentValues.TAG, "Can't identify language.")
+//                                } else {
+//                                    Log.i(ContentValues.TAG, "Language: $languageCode")
+//                                }
+//                            }
+//                            .addOnFailureListener {
+//
+//                            }
+//                    }
+//                    ) {
+//                        Text(text = "언어 식별")
+//
+//                    }
+//                }
 
             }
 
