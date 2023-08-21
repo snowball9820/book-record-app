@@ -3,7 +3,6 @@
 package com.app.bookrecordapp
 
 
-import ExtractionScreen
 import android.net.Uri
 import android.os.Bundle
 import android.os.SystemClock
@@ -27,15 +26,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -69,6 +71,7 @@ import com.app.bookrecordapp.screen.MembershipScreen
 import com.app.bookrecordapp.screen.MenuScreen
 import com.app.bookrecordapp.screen.RegistrationScreen
 import com.app.bookrecordapp.screen.TranslationScreen
+import com.app.bookrecordapp.screen.TtsScreen
 import com.app.bookrecordapp.screen.myBookRecordScreen
 import com.app.bookrecordapp.screen.translationRecordScreen
 import com.app.bookrecordapp.stopwatch.StopWatchScreen
@@ -143,8 +146,8 @@ fun Navi() {
                 composable("record") {
                     ReadingRecordScreen(navController)
                 }
-                composable("extraction") {
-                    ExtractionScreen(navController)
+                composable("tts") {
+                    TtsScreen(navController)
                 }
                 composable("stopwatch") {
                     StopWatchScreen(navController)
@@ -268,12 +271,18 @@ fun NoteInputText(
     onImeAction: () -> Unit = {}
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    TextField(
+    OutlinedTextField(
         value = text,
         onValueChange = onTextChange,
         colors = TextFieldDefaults.textFieldColors(MaterialTheme.colorScheme.tertiary),
         maxLines = maxLine,
         label = { Text(text = label) },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Edit,
+                contentDescription = null
+            )
+        },
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Done
         ),
@@ -441,7 +450,7 @@ fun ReadingRecordScreen(navController: NavController) {
 
 
         }
-        fun addNewTouchEvent(event: MotionEvent,drawingPoints: MutableList<Offset>) {
+        fun addNewTouchEvent(event: MotionEvent, drawingPoints: MutableList<Offset>) {
             val action = event.actionMasked
             val x = event.x
             val y = event.y
@@ -532,8 +541,9 @@ fun ReadingRecordScreen(navController: NavController) {
                             painter = rememberImagePainter(data = selectedImageUri),
                             contentDescription = "",
                             modifier = Modifier
-                                .width(100.dp)
-                                .height(200.dp)
+                                .width(130.dp)
+                                .height(220.dp)
+                                .padding(top=8.dp, bottom = 4.dp)
                         )
 
 

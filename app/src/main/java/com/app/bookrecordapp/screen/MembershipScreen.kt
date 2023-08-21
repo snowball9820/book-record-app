@@ -14,11 +14,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -115,22 +119,33 @@ fun MembershipScreen(navController: NavController) {
                 )
             }
             Spacer(modifier = Modifier.padding(4.dp))
-
-
-
-            TextField(
+            OutlinedTextField(
                 value = textId,
                 onValueChange = { textId = it },
-                label = { Text("ID") }
+                label = { Text("ID") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = null
+                    )
+                }
             )
+
+
             Spacer(modifier = Modifier.padding(12.dp))
 
-            TextField(
+
+            OutlinedTextField(
                 value = textPw,
                 onValueChange = { textPw = it },
                 label = { Text("PASSWORD") },
-
-                )
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = null
+                    )
+                }
+            )
             Spacer(modifier = Modifier.padding(12.dp))
             Button(
                 onClick = {

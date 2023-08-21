@@ -41,7 +41,7 @@ fun MenuScreen(navController: NavController) {
                 painter = painterResource(id = R.drawable.bookreport03_logo),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(width = 150.dp, height = 80.dp)
+                    .size(width = 180.dp, height =100.dp)
 
 
             )
@@ -91,9 +91,9 @@ fun MenuScreen(navController: NavController) {
             }
             Row {
                 MenuButton(
-                    onClick = { navController.navigate("extraction") },
-                    text = "도서 항목 추출",
-                    imageResource = R.drawable.booklogo4
+                    onClick = { navController.navigate("tts") },
+                    text = "문장 음성 변환",
+                    imageResource = R.drawable.play_icon
 
                 )
                 Spacer(

@@ -112,15 +112,22 @@ dependencies {
     // To recognize Korean script
     implementation ("com.google.mlkit:text-recognition-korean:16.0.0")
 
-    // 언어식별
+    // 언어 식별
     implementation ("com.google.mlkit:language-id:17.0.4")
 
     //Ink
     implementation ("com.google.mlkit:digital-ink-recognition:18.1.0")
 
     //retrofit2
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-moshi:2.9.0")
 
     implementation("com.github.jaikeerthick:Composable-Graphs:v1.0")
+
+    //날씨
+    implementation ("com.loopj.android:android-async-http:1.4.11")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+
+
+
+
 }
