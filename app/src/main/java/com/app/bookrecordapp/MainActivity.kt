@@ -8,6 +8,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,8 +18,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
@@ -39,15 +38,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,13 +59,12 @@ import com.app.bookrecordapp.data.User
 import com.app.bookrecordapp.screen.MembershipScreen
 import com.app.bookrecordapp.screen.MenuScreen
 import com.app.bookrecordapp.screen.RegistrationScreen
+import com.app.bookrecordapp.screen.StopWatchScreen
 import com.app.bookrecordapp.screen.TranslationScreen
 import com.app.bookrecordapp.screen.TtsScreen
 import com.app.bookrecordapp.screen.myBookRecordScreen
 import com.app.bookrecordapp.screen.translationRecordScreen
-import com.app.bookrecordapp.stopwatch.StopWatchScreen
 import com.app.bookrecordapp.ui.theme.BookRecordAppTheme
-import com.google.mlkit.vision.digitalink.Ink
 import com.jaikeerthick.composable_graphs.color.LinearGraphColors
 import com.jaikeerthick.composable_graphs.composables.LineGraph
 import com.jaikeerthick.composable_graphs.data.GraphData
@@ -254,10 +249,9 @@ fun NoteInputText(
     text: String,
     label: String,
     maxLine: Int = 1,
-    onTextChange: (String) -> Unit,
-    onImeAction: () -> Unit = {}
+    onTextChange: (String) -> Unit
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
+
     OutlinedTextField(
         value = text,
         onValueChange = onTextChange,
@@ -270,13 +264,7 @@ fun NoteInputText(
                 contentDescription = null
             )
         },
-        keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Done
-        ),
-        keyboardActions = KeyboardActions(onDone = {
-            onImeAction()
-            keyboardController?.hide()
-        }),
+
         modifier = modifier
     )
 
@@ -396,10 +384,10 @@ fun ReadingRecordScreen(navController: NavController) {
     val notes = remember { mutableStateListOf<Note>() }
 
 
-    val inkBuilder = Ink.builder()
-    var strokeBuilder: Ink.Stroke.Builder? = null
-
-    val drawingPoints = remember { mutableListOf<Offset>() }
+//    val inkBuilder = Ink.builder()
+//    var strokeBuilder: Ink.Stroke.Builder? = null
+//
+//    val drawingPoints = remember { mutableListOf<Offset>() }
 
     fun removeNoteById(noteId: UUID) {
         notes.removeIf { it.id == noteId }
@@ -575,7 +563,7 @@ fun ReadingRecordScreen(navController: NavController) {
 
                     Button(
                         onClick = {
-//                            launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                            launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
 //                            val ink = createInkFromDrawingPoints(drawingPoints)
 //                            recognizeInk(ink)
 //

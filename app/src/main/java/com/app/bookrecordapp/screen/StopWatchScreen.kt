@@ -1,4 +1,4 @@
-package com.app.bookrecordapp.stopwatch
+package com.app.bookrecordapp.screen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,6 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.app.bookrecordapp.stopwatch.StopWatchDisplay
 import com.app.bookrecordapp.vm.StopWatchViewModel
 
 @Composable
