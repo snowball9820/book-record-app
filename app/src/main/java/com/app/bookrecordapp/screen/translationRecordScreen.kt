@@ -77,7 +77,7 @@ fun translationRecordScreen(navController: NavController,
             onClick = { fetchText() },
             modifier = Modifier.padding(16.dp)
         ) {
-            Text(text = "나의 책 구절 확인")
+            Text(text = "나의 책 구절 ")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
