@@ -22,18 +22,18 @@ class StopWatchViewModel : ViewModel() {
 
     private var isActive = false
     private var timeMillis = 0L
-    private var lastTimestamp = 0L
+    private var lastTime = 0L
 
     fun start() {
         if (isActive) return
 
         coroutineScope.launch {
-            lastTimestamp = System.currentTimeMillis()
+            lastTime = System.currentTimeMillis()
             isActive = true
             while (isActive) {
                 delay(10L)
-                timeMillis += System.currentTimeMillis() - lastTimestamp
-                lastTimestamp = System.currentTimeMillis()
+                timeMillis += System.currentTimeMillis() - lastTime
+                lastTime = System.currentTimeMillis()
                 formattedTime.value = formatTime(timeMillis)
             }
         }
@@ -46,7 +46,7 @@ class StopWatchViewModel : ViewModel() {
     fun reset() {
         coroutineScope.cancel()
         timeMillis = 0L
-        lastTimestamp = 0L
+        lastTime = 0L
         formattedTime.value = "00:00:000"
         isActive = false
     }
