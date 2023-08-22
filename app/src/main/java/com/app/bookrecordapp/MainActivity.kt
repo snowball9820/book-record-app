@@ -639,7 +639,7 @@ fun ReadingRecordScreen(navController: NavController) {
                             .height(30.dp)
                     ) {
                         Text(
-                            "임시 저장",
+                            "초기화",
                             fontSize = 12.sp,
                             fontFamily = FontFamily.Monospace,
                             fontWeight = FontWeight.ExtraBold

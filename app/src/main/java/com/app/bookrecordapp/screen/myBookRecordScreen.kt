@@ -12,22 +12,26 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,13 +53,15 @@ import com.app.bookrecordapp.data.AppDatabase
 import com.app.bookrecordapp.data.UserDAO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun myBookRecordScreen(navController: NavController,
-                       userDao: UserDAO,
-                       isFavorite:Boolean,
-                       onTabFavorite:(Boolean)->Unit) {
+fun myBookRecordScreen(
+    navController: NavController,
+    userDao: UserDAO,
+    isFavorite: Boolean,
+    onTabFavorite: (Boolean) -> Unit
+) {
 
 
     val context = LocalContext.current
@@ -68,38 +74,79 @@ fun myBookRecordScreen(navController: NavController,
         .addMigrations()
         .build()
 
-
-    var titlesDescriptionsImages by remember { mutableStateOf(emptyList<UserDAO.TitleDescriptionImage>()) }
-    var showDetails = remember { mutableStateOf(false) }
+    var showDetails by remember { mutableStateOf(false) }
+    var uid by remember { mutableStateOf(value = "") }
 
     val coroutineScope = rememberCoroutineScope()
-
-    LaunchedEffect(showDetails.value) {
-        if (showDetails.value) {
-            coroutineScope.launch {
-                val fetchedData = withContext(Dispatchers.IO) {
-                    db.userDao().getAllTitlesDescriptionsAndImageUris()
-                }
-                titlesDescriptionsImages = fetchedData
-            }
-        }
-    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(
-            onClick = { showDetails.value = !showDetails.value },
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(text = "나의 기록")
+        Row {
+            Button(
+                onClick = { showDetails = !showDetails },
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(text = "나의 기록")
+            }
+
+
+            OutlinedTextField(
+                value = uid,
+                onValueChange = { uid = it },
+                Modifier
+                    .height(70.dp)
+                    .width(50.dp)
+                    .padding(top = 24.dp)
+            )
+
+            Spacer(
+                modifier = Modifier
+                    .padding(8.dp)
+            )
+
+
+            Button(
+                onClick = {
+                    coroutineScope.launch(Dispatchers.IO) {
+                        val userList = db.userDao().getAll2()
+                        userList.find { it.uid == uid.toIntOrNull() }?.let {
+                            db.userDao().delete(it)
+                        }
+                    }
+
+
+                },
+                Modifier
+                    .padding(top = 16.dp)
+            ) {
+                Icon(imageVector = Icons.Default.Clear, contentDescription = "")
+            }
+
+
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (showDetails.value) {
+        if (showDetails) {
+            val titlesDescriptionsImages by db.userDao().getAllTitlesDescriptionsAndImageUris()
+                .collectAsState(
+                    initial = emptyList()
+                )
+//            remember { mutableStateOf(emptyList<UserDAO.TitleDescriptionImage>()) }
+//            LaunchedEffect(showDetails.value) {
+//                if (showDetails.value) {
+//                    coroutineScope.launch {
+//                        val fetchedData = withContext(Dispatchers.IO) {
+//                            db.userDao().getAllTitlesDescriptionsAndImageUris().first()
+//                        }
+//                        titlesDescriptionsImages = fetchedData
+//                    }
+//                }
+//            }
+
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp)
@@ -134,9 +181,10 @@ fun myBookRecordScreen(navController: NavController,
                                     }
                                 }
                                 Column {
-                                    Box(modifier = Modifier.fillMaxSize(),
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
                                         contentAlignment = Alignment.TopEnd,
-                                    ){
+                                    ) {
                                         IconButton(onClick = {
                                             onTabFavorite(!isFavorite)
                                         }) {
@@ -149,9 +197,10 @@ fun myBookRecordScreen(navController: NavController,
                                         }
 
                                     }
-                                    Text(text = "제목: ${data.title}")
+                                    Text(text = "no.:${data.uid}")
+                                    Text(text = "title: ${data.title}")
                                     Text(
-                                        text = "메모: ${data.description}",
+                                        text = "memo: ${data.description}",
                                         style = LocalTextStyle.current.merge(
                                             TextStyle(
                                                 lineHeight = 1.5.em,

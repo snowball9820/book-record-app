@@ -82,7 +82,6 @@ fun MembershipScreen(navController: NavController) {
     Box() {
 
 
-
         Image(
             painter = painterResource(id = R.drawable.purple05_back),
             contentDescription = null,
@@ -156,12 +155,12 @@ fun MembershipScreen(navController: NavController) {
 
                         textId = textId,
                         textPw = textPw,
-                        text ="",
-                        title="",
+                        text = "",
+                        title = "",
                         description = "",
 
 
-                    )
+                        )
                     scope.launch(Dispatchers.IO) {
                         db.userDao().insertAll(newUser)
                     }

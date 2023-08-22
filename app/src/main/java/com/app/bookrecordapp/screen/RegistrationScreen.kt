@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -70,15 +72,15 @@ fun RegistrationScreen(navController: NavController) {
 
             Text(text = "회원 등록이 완료 되었습니다.")
 
-            Button(
-                onClick = {
-                    navController.navigate("menu")
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary
-                ),
-            ) {
-                Text(text = "시작")
+
+            IconButton(onClick = {
+                navController.navigate("menu")
+            }) {
+                Icon(
+                    imageVector = Icons.Default.Home,
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.tertiary
+                )
 
             }
 
