@@ -215,8 +215,12 @@ fun recordGraph(notes: List<Note>, navController: NavController) {
                 fillGradient = Brush.verticalGradient(
                     0.2f to Color(0xFF9966CC), 0.5f to Color(0xFF5F4B8B)
                 )
+
+
             ),
             height = 100.dp
+
+
         )
 
         LineGraph(
