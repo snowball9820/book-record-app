@@ -135,17 +135,7 @@ fun myBookRecordScreen(
                 .collectAsState(
                     initial = emptyList()
                 )
-//            remember { mutableStateOf(emptyList<UserDAO.TitleDescriptionImage>()) }
-//            LaunchedEffect(showDetails.value) {
-//                if (showDetails.value) {
-//                    coroutineScope.launch {
-//                        val fetchedData = withContext(Dispatchers.IO) {
-//                            db.userDao().getAllTitlesDescriptionsAndImageUris().first()
-//                        }
-//                        titlesDescriptionsImages = fetchedData
-//                    }
-//                }
-//            }
+
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),

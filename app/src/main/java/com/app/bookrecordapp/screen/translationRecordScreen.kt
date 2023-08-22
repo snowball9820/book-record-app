@@ -50,15 +50,13 @@ fun translationRecordScreen(navController: NavController,
         context,
         AppDatabase::class.java,
         "contacts.db"
-    )
-        .addMigrations()
-        .build()
+    ).build()
 
     val userDao: UserDAO = db.userDao()
     val textState = remember { mutableStateOf<List<String>>(emptyList()) }
     val coroutineScope = rememberCoroutineScope()
 
-    fun fetchTextIds() {
+    fun fetchText() {
         try {
             coroutineScope.launch(Dispatchers.IO) {
                 val allUsers: List<User> = userDao.getAll()
@@ -76,7 +74,7 @@ fun translationRecordScreen(navController: NavController,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
-            onClick = { fetchTextIds() },
+            onClick = { fetchText() },
             modifier = Modifier.padding(16.dp)
         ) {
             Text(text = "나의 책 구절 확인")

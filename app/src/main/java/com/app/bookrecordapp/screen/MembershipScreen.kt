@@ -74,7 +74,7 @@ fun MembershipScreen(navController: NavController) {
 
     LaunchedEffect(shouldAnimate) {
         if (shouldAnimate) {
-            delay(300) // Adding a delay before starting the animation
+            delay(300)
             shouldAnimate = false
         }
     }
