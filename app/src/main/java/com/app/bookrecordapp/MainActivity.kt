@@ -16,7 +16,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -60,10 +59,10 @@ import com.app.bookrecordapp.screen.MembershipScreen
 import com.app.bookrecordapp.screen.MenuScreen
 import com.app.bookrecordapp.screen.RegistrationScreen
 import com.app.bookrecordapp.screen.StopWatchScreen
+import com.app.bookrecordapp.screen.TranslationRecordScreen
 import com.app.bookrecordapp.screen.TranslationScreen
 import com.app.bookrecordapp.screen.TtsScreen
 import com.app.bookrecordapp.screen.myBookRecordScreen
-import com.app.bookrecordapp.screen.translationRecordScreen
 import com.app.bookrecordapp.ui.theme.BookRecordAppTheme
 import com.jaikeerthick.composable_graphs.color.LinearGraphColors
 import com.jaikeerthick.composable_graphs.composables.LineGraph
@@ -135,7 +134,7 @@ fun Navi() {
                     StopWatchScreen(navController)
                 }
                 composable("translationRecord") {
-                    translationRecordScreen(navController, userDao, isFavorite) { favorite ->
+                    TranslationRecordScreen(navController, userDao, isFavorite) { favorite ->
                         isFavorite = favorite
                     }
                 }
@@ -186,7 +185,6 @@ fun MyProfile(noteCount: Int) {
 
             Button(
                 onClick = {
-
                 },
                 modifier = Modifier
                     .width(180.dp)
@@ -279,7 +277,6 @@ fun NoteButton(
 ) {
     Button(
         onClick = onClick,
-        shape = CircleShape,
         enabled = enabled,
         modifier = modifier
     ) {

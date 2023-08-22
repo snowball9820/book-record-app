@@ -311,53 +311,9 @@ fun TranslationScreen(navController: NavController) {
                         defaultElevation = 12.dp
                     )
                 ) {
-                    Text(
-                        text = enText,
-                        style = LocalTextStyle.current.merge(
-                            TextStyle(
-                                lineHeight = 1.5.em,
-                                platformStyle = PlatformTextStyle(
-                                    includeFontPadding = false
-                                ),
-                                lineHeightStyle = LineHeightStyle(
-                                    alignment = LineHeightStyle.Alignment.Center,
-                                    trim = LineHeightStyle.Trim.None
-                                )
-                            )
-                        )
-                    )
-
-                    Text(
-                        text = jaText,
-                        style = LocalTextStyle.current.merge(
-                            TextStyle(
-                                lineHeight = 1.5.em,
-                                platformStyle = PlatformTextStyle(
-                                    includeFontPadding = false
-                                ),
-                                lineHeightStyle = LineHeightStyle(
-                                    alignment = LineHeightStyle.Alignment.Center,
-                                    trim = LineHeightStyle.Trim.None
-                                )
-                            )
-                        ),
-                    )
-
-                    Text(
-                        text = chText,
-                        style = LocalTextStyle.current.merge(
-                            TextStyle(
-                                lineHeight = 1.5.em,
-                                platformStyle = PlatformTextStyle(
-                                    includeFontPadding = false
-                                ),
-                                lineHeightStyle = LineHeightStyle(
-                                    alignment = LineHeightStyle.Alignment.Center,
-                                    trim = LineHeightStyle.Trim.None
-                                )
-                            )
-                        ),
-                    )
+                    TranslatedText(enText)
+                    TranslatedText(jaText)
+                    TranslatedText(chText)
 
                 }
                 Spacer(modifier = Modifier.padding(12.dp))
@@ -394,4 +350,22 @@ fun TranslationScreen(navController: NavController) {
     }
 
 
+}
+@Composable
+fun TranslatedText(text: String) {
+    Text(
+        text = text,
+        style = LocalTextStyle.current.merge(
+            TextStyle(
+                lineHeight = 1.5.em,
+                platformStyle = PlatformTextStyle(
+                    includeFontPadding = false
+                ),
+                lineHeightStyle = LineHeightStyle(
+                    alignment = LineHeightStyle.Alignment.Center,
+                    trim = LineHeightStyle.Trim.None
+                )
+            )
+        )
+    )
 }

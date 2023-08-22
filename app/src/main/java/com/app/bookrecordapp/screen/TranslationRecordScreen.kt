@@ -38,7 +38,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun translationRecordScreen(navController: NavController,
+fun TranslationRecordScreen(navController: NavController,
                             userDao: UserDAO,
                             isFavorite:Boolean,
                             onTabFavorite:(Boolean)->Unit)
