@@ -197,7 +197,7 @@ fun myBookRecordScreen(
                                         }
 
                                     }
-                                    Text(text = "no.:${data.uid}")
+                                    Text(text = "no.${data.uid}")
                                     Text(text = "title: ${data.title}")
                                     Text(
                                         text = "memo: ${data.description}",

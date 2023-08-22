@@ -1,20 +1,20 @@
 package com.app.bookrecordapp.screen
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.foundation.Image
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -36,7 +35,9 @@ import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TtsScreen(navController: NavController, viewModel: TtsViewModel = viewModel()) {
+fun TtsScreen(navController: NavController) {
+
+    val viewModel: TtsViewModel = viewModel()
 
     val state = viewModel.state.value
     val context = LocalContext.current
@@ -58,31 +59,10 @@ fun TtsScreen(navController: NavController, viewModel: TtsViewModel = viewModel(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        AnimatedVisibility(
-            visible = !shouldAnimate,
-            enter = slideInHorizontally(
-                initialOffsetX = { fullWidth -> fullWidth },
-                animationSpec = tween(durationMillis = 1000, delayMillis = 300)
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.playimage_icon),
-                contentDescription = "",
-                modifier = Modifier
-                    .height(200.dp)
-                    .width(200.dp)
-
-            )
-
-        }
-
         OutlinedTextField(
             value = state.text,
             onValueChange = { viewModel.onTextFieldValueChange(it) },
-            Modifier
+            modifier = Modifier
                 .height(200.dp)
                 .width(400.dp)
                 .padding(top = 12.dp),
@@ -92,6 +72,18 @@ fun TtsScreen(navController: NavController, viewModel: TtsViewModel = viewModel(
                     imageVector = Icons.Default.Send,
                     contentDescription = null
                 )
+            },
+            trailingIcon = {
+                IconButton(onClick = {
+                    val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newPlainText("TTS", state.text)
+                    clipboardManager.setPrimaryClip(clip)
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = ""
+                    )
+                }
             }
         )
         Spacer(modifier = Modifier.height(12.dp))

@@ -5,19 +5,13 @@ package com.app.bookrecordapp
 
 import android.net.Uri
 import android.os.Bundle
-import android.os.SystemClock
-import android.util.Log
-import android.view.MotionEvent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -48,7 +42,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -76,13 +69,7 @@ import com.app.bookrecordapp.screen.myBookRecordScreen
 import com.app.bookrecordapp.screen.translationRecordScreen
 import com.app.bookrecordapp.stopwatch.StopWatchScreen
 import com.app.bookrecordapp.ui.theme.BookRecordAppTheme
-import com.google.mlkit.vision.digitalink.DigitalInkRecognition
-import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModel
-import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModelIdentifier
-import com.google.mlkit.vision.digitalink.DigitalInkRecognizer
-import com.google.mlkit.vision.digitalink.DigitalInkRecognizerOptions
 import com.google.mlkit.vision.digitalink.Ink
-import com.google.mlkit.vision.digitalink.RecognitionResult
 import com.jaikeerthick.composable_graphs.color.LinearGraphColors
 import com.jaikeerthick.composable_graphs.composables.LineGraph
 import com.jaikeerthick.composable_graphs.data.GraphData
@@ -436,12 +423,12 @@ fun ReadingRecordScreen(navController: NavController) {
 
         modifier = Modifier
             .fillMaxWidth()
-            .pointerInput(Unit) {
-                detectTransformGestures { _, _, _, _ ->
-
-
-                }
-            }
+//            .pointerInput(Unit) {
+//                detectTransformGestures { _, _, _, _ ->
+//
+//
+//                }
+//            }
     ) {
 
         MyProfile(noteCount = notes.size)
@@ -450,79 +437,79 @@ fun ReadingRecordScreen(navController: NavController) {
 
 
         }
-        fun addNewTouchEvent(event: MotionEvent, drawingPoints: MutableList<Offset>) {
-            val action = event.actionMasked
-            val x = event.x
-            val y = event.y
-            val t = System.currentTimeMillis()
-
-            when (action) {
-                MotionEvent.ACTION_DOWN -> {
-                    strokeBuilder = Ink.Stroke.builder()
-                    strokeBuilder!!.addPoint(Ink.Point.create(x, y, t))
-                }
-
-                MotionEvent.ACTION_MOVE -> {
-                    strokeBuilder?.addPoint(Ink.Point.create(x, y, t))
-                }
-
-                MotionEvent.ACTION_UP -> {
-                    strokeBuilder?.addPoint(Ink.Point.create(x, y, t))
-                    strokeBuilder?.let {
-                        inkBuilder.addStroke(it.build())
-                    }
-                    strokeBuilder = null
-                }
-
-                else -> {
-
-                }
-            }
-        }
-
-        Canvas(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp)
-                .pointerInput(Unit) {
-                    detectTransformGestures { _, pan, _, _ ->
-                        val offsetX = pan.x
-                        val offsetY = pan.y
-                        drawingPoints.add(Offset(offsetX, offsetY))
-
-                        val event = MotionEvent.obtain(
-                            SystemClock.uptimeMillis(),
-                            SystemClock.uptimeMillis(),
-                            MotionEvent.ACTION_MOVE,
-                            offsetX,
-                            offsetY,
-                            0
-                        )
-                        addNewTouchEvent(event, drawingPoints)
-                    }
-                }
-        ) {
-            for (i in 0 until drawingPoints.size - 1) {
-                drawLine(
-                    color = androidx.compose.ui.graphics.Color.DarkGray,
-                    start = drawingPoints[i],
-                    end = drawingPoints[i + 1],
-                    strokeWidth = 5f
-                )
-            }
-        }
-
-        fun createInkFromDrawingPoints(points: List<Offset>): Ink {
-            val inkBuilder = Ink.builder()
-            val strokeBuilder = Ink.Stroke.builder()
-
-            for (point in points) {
-                strokeBuilder.addPoint(Ink.Point.create(point.x, point.y))
-            }
-
-            inkBuilder.addStroke(strokeBuilder.build())
-            return inkBuilder.build()
-        }
+//        fun addNewTouchEvent(event: MotionEvent, drawingPoints: MutableList<Offset>) {
+//            val action = event.actionMasked
+//            val x = event.x
+//            val y = event.y
+//            val t = System.currentTimeMillis()
+//
+//            when (action) {
+//                MotionEvent.ACTION_DOWN -> {
+//                    strokeBuilder = Ink.Stroke.builder()
+//                    strokeBuilder!!.addPoint(Ink.Point.create(x, y, t))
+//                }
+//
+//                MotionEvent.ACTION_MOVE -> {
+//                    strokeBuilder?.addPoint(Ink.Point.create(x, y, t))
+//                }
+//
+//                MotionEvent.ACTION_UP -> {
+//                    strokeBuilder?.addPoint(Ink.Point.create(x, y, t))
+//                    strokeBuilder?.let {
+//                        inkBuilder.addStroke(it.build())
+//                    }
+//                    strokeBuilder = null
+//                }
+//
+//                else -> {
+//
+//                }
+//            }
+//        }
+//
+//        Canvas(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(180.dp)
+//                .pointerInput(Unit) {
+//                    detectTransformGestures { _, pan, _, _ ->
+//                        val offsetX = pan.x
+//                        val offsetY = pan.y
+//                        drawingPoints.add(Offset(offsetX, offsetY))
+//
+//                        val event = MotionEvent.obtain(
+//                            SystemClock.uptimeMillis(),
+//                            SystemClock.uptimeMillis(),
+//                            MotionEvent.ACTION_MOVE,
+//                            offsetX,
+//                            offsetY,
+//                            0
+//                        )
+//                        addNewTouchEvent(event, drawingPoints)
+//                    }
+//                }
+//        ) {
+//            for (i in 0 until drawingPoints.size - 1) {
+//                drawLine(
+//                    color = androidx.compose.ui.graphics.Color.DarkGray,
+//                    start = drawingPoints[i],
+//                    end = drawingPoints[i + 1],
+//                    strokeWidth = 5f
+//                )
+//            }
+//        }
+//
+//        fun createInkFromDrawingPoints(points: List<Offset>): Ink {
+//            val inkBuilder = Ink.builder()
+//            val strokeBuilder = Ink.Stroke.builder()
+//
+//            for (point in points) {
+//                strokeBuilder.addPoint(Ink.Point.create(point.x, point.y))
+//            }
+//
+//            inkBuilder.addStroke(strokeBuilder.build())
+//            return inkBuilder.build()
+//        }
 
 
         Spacer(modifier = Modifier.padding(12.dp))
@@ -543,7 +530,7 @@ fun ReadingRecordScreen(navController: NavController) {
                             modifier = Modifier
                                 .width(130.dp)
                                 .height(220.dp)
-                                .padding(top=8.dp, bottom = 4.dp)
+                                .padding(top = 8.dp, bottom = 4.dp)
                         )
 
 
@@ -588,11 +575,11 @@ fun ReadingRecordScreen(navController: NavController) {
 
                     Button(
                         onClick = {
-                            launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                            val ink = createInkFromDrawingPoints(drawingPoints)
-                            recognizeInk(ink)
-
-                            drawingPoints.clear()
+//                            launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+//                            val ink = createInkFromDrawingPoints(drawingPoints)
+//                            recognizeInk(ink)
+//
+//                            drawingPoints.clear()
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.tertiary,
@@ -625,8 +612,8 @@ fun ReadingRecordScreen(navController: NavController) {
                                 description = ""
                                 selectedImageUri = null
 
-                                val ink = inkBuilder.build()
-                                recognizeInk(ink)
+//                                val ink = inkBuilder.build()
+//                                recognizeInk(ink)
                             }
 
                         },
@@ -648,8 +635,6 @@ fun ReadingRecordScreen(navController: NavController) {
                     }
 
                 }
-
-
 
                 NoteButton(
                     text = "저장",
@@ -694,30 +679,30 @@ fun ReadingRecordScreen(navController: NavController) {
 
 }
 
-
-private fun recognizeInk(ink: Ink) {
-    val modelIdentifier = DigitalInkRecognitionModelIdentifier.fromLanguageTag("en-US")
-        ?: return
-    val model = DigitalInkRecognitionModel.builder(modelIdentifier).build()
-
-    val recognizer: DigitalInkRecognizer = DigitalInkRecognition.getClient(
-        DigitalInkRecognizerOptions.builder(model).build()
-    )
-
-    recognizer.recognize(ink)
-        .addOnSuccessListener { result: RecognitionResult ->
-            if (result.candidates.isNotEmpty()) {
-                val recognizedText = result.candidates[0].text
-
-                Log.d("RecognizedText", "Recognized Text: $recognizedText")
-            } else {
-                Log.d("RecognizedText", "No candidates found in recognition result.")
-            }
-        }
-        .addOnFailureListener { e: Exception ->
-            Log.e("RecognizedText", "Error during recognition: $e")
-        }
-}
+//
+//private fun recognizeInk(ink: Ink) {
+//    val modelIdentifier = DigitalInkRecognitionModelIdentifier.fromLanguageTag("en-US")
+//        ?: return
+//    val model = DigitalInkRecognitionModel.builder(modelIdentifier).build()
+//
+//    val recognizer: DigitalInkRecognizer = DigitalInkRecognition.getClient(
+//        DigitalInkRecognizerOptions.builder(model).build()
+//    )
+//
+//    recognizer.recognize(ink)
+//        .addOnSuccessListener { result: RecognitionResult ->
+//            if (result.candidates.isNotEmpty()) {
+//                val recognizedText = result.candidates[0].text
+//
+//                Log.d("RecognizedText", "Recognized Text: $recognizedText")
+//            } else {
+//                Log.d("RecognizedText", "No candidates found in recognition result.")
+//            }
+//        }
+//        .addOnFailureListener { e: Exception ->
+//            Log.e("RecognizedText", "Error during recognition: $e")
+//        }
+//}
 
 
 @Preview(showBackground = true)

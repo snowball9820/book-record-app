@@ -62,9 +62,9 @@ fun MembershipScreen(navController: NavController) {
     val scope = rememberCoroutineScope()
 
     var textId by remember { mutableStateOf("") }
-    var savedTextId by remember { mutableStateOf(value = "") }
+
     var textPw by remember { mutableStateOf("") }
-    var savedTextPw by remember { mutableStateOf(value = "") }
+
 
     fun workableButton(): Boolean {
         return textId.isNotEmpty() && textPw.isNotEmpty()
@@ -148,9 +148,6 @@ fun MembershipScreen(navController: NavController) {
             Spacer(modifier = Modifier.padding(12.dp))
             Button(
                 onClick = {
-                    savedTextId = textId
-                    savedTextPw = textPw
-
                     val newUser = User(
 
                         textId = textId,
@@ -158,7 +155,6 @@ fun MembershipScreen(navController: NavController) {
                         text = "",
                         title = "",
                         description = "",
-
 
                         )
                     scope.launch(Dispatchers.IO) {
