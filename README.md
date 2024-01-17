@@ -9,7 +9,8 @@
 --------------------
 ![image](https://github.com/snowball9820/book-record-app/assets/124758100/b9fe7d11-8bba-413f-b778-d403b5e43282)  
 ----------------------  
-### 프로젝트 시연영상    
+### 프로젝트 시연영상  
+![bookreport_01](https://github.com/snowball9820/book-record-app/assets/124758100/22ce07ed-e780-425d-a336-e93c80eeb40f)
 
 ## ❗기능구현&도전한 것&깨달은 점(배운 점):  
 ### 기능구현  
