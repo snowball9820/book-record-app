@@ -2,7 +2,7 @@
 
 ### 기술 스택&라이브러리:  
 #### Kotlin/ViewModel/Room DB/Jetpack Compose/Google ML Kit/Text Recognition V2/Translation/Digital Ink Recognition  
-### 협업 툴:  
+### 사용 툴:  
 #### Git/Notion/Figma  
 
 ## ⏰프로젝트 기간  
