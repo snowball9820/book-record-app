@@ -1,7 +1,7 @@
-<div><h1>📚 기술 스택&라이브러리&협업 툴</h1></div>  
+<div><h1>📚 기술 스택&라이브러리&사용 툴</h1></div>  
 
 ### 기술 스택&라이브러리:  
-#### Kotlin/ViewModel/Room DB/Jetpack Compose/Google ML Kit/Text Recognition V2/Translation/Digital Ink Recognition  
+#### AndroidStudio/Kotlin/ViewModel/Room DB/Jetpack Compose/Google ML Kit/Text Recognition V2/Translation/Digital Ink Recognition  
 ### 사용 툴:  
 #### Git/Notion/Figma  
 
