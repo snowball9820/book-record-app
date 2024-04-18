@@ -1,30 +1,46 @@
-<div><h1>📚 기술 스택&라이브러리&사용 툴</h1></div>  
+<div><h3>📚 기술 스택&라이브러리&사용 툴</h3></div>  
 
-### 기술 스택&라이브러리:  
-#### AndroidStudio/Kotlin/ViewModel/Room DB/Jetpack Compose/Google ML Kit/Text Recognition V2/Translation/Digital Ink Recognition  
-### 사용 툴:  
-#### Git/Notion/Figma  
+#### 기술 스택&라이브러리:  
+- AndroidStudio
+- Android SDK 33
+- Minimum SDK: 26
+- Target SDK: 33
+- Kotlin: Version 1.8.0.
+- ViewModel
+- Navigation
+- Room DB
+- Coil
+- Composable Graphs
+- Jetpack Compose
+- Google ML Kit `Text Recognition V2` `language identification` `Translation` `Digital Ink Recognition`
+- AndroidX Libraries: AndroidX core and lifecycle, Compose UI , Material3 
+
+#### 사용 툴:  
+- Git
+- Notion
+- Figma  
 
 ## ⏰프로젝트 기간  
 ####  분류: 개인프로젝트  
 #### 2023년 8월 16일~2023년 8월 22일 
 
-## ✨한 줄 소개:    
+### ✨한 줄 소개:    
 다양한 기능(텍스트 인식, 번역, 복사, TTS, 타이머, 다이어리)이 들어있는 독서 기록 용 앱  
 
-## 📑프로젝트 설명  
-### 프로젝트 스크린샷
+### 📑프로젝트 설명  
+#### 프로젝트 스크린샷
 ![image](https://github.com/snowball9820/book-record-app/assets/124758100/a90602c4-a709-40a9-bdbb-7d2da36f6108)  
 --------------------
 ![image](https://github.com/snowball9820/book-record-app/assets/124758100/9841c3ec-5e89-4878-aa16-79df55b2fa2d)  
 --------------------
 ![image](https://github.com/snowball9820/book-record-app/assets/124758100/b9fe7d11-8bba-413f-b778-d403b5e43282)  
 ----------------------  
-### 프로젝트 시연영상  
-![bookreport_01](https://github.com/snowball9820/book-record-app/assets/124758100/22ce07ed-e780-425d-a336-e93c80eeb40f)
+#### 프로젝트 시연영상  
+<img src="https://github.com/snowball9820/book-record-app/assets/124758100/22ce07ed-e780-425d-a336-e93c80eeb40f" width="250">
 
-## ❗기능구현&도전한 것&깨달은 점(배운 점):  
-### 기능구현  
+
+### ❗기능구현&도전한 것&깨달은 점(배운 점):  
+#### 기능구현  
 - 이미지 텍스트 인식 기능 구현
 - 텍스트 번역(영어,일본어,중국어)기능 구현
 - Room db에 저장, 불러오기, 삭제 기능 구현
@@ -32,8 +48,9 @@
 - 스톱워치 기능 구현
 - Animation기능 구현
 - 그래프 구현
-### 도전한 것  
-→Room, Navigation, View Model, Jet pack Compose, ML Kit, TTS, Animation
+
+#### 도전한 것  
+→ Room, Navigation, View Model, Jet pack Compose, ML Kit, TTS, Animation
 
 - Room: Room에 데이터를 저장하고 불러오고 삭제하는 과정에서 다양한 쿼리 문을 사용하며 데이터를 이용함
 - Navigation: 기존에는 Activity간의 화면 이동을 사용하였는데 이번 프로젝트에서 Compose Navigation을 사용함
