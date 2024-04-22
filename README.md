@@ -5,7 +5,8 @@
 - Android SDK 33
 - Minimum SDK: 26
 - Target SDK: 33
-- Kotlin: Version 1.8.0.
+- Kotlin: Version 1.8.0
+- Java: 17.0.8
 - ViewModel
 - Navigation
 - Room DB
